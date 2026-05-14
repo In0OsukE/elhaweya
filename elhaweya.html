@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الهاوية - مكتبة المانجا والمانهوا</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #12121a;
+            --bg-darker: #0a0a10;
+            --bg-card: #1e1e2e;
+            --bg-hover: #252540;
+            --accent: #e94560;
+            --accent-gold: #f5c518;
+            --accent-blue: #4dabf7;
+            --accent-green: #2ecc71;
+            --text: #e0e0e0;
+            --text-muted: #999;
+            --border: #2a2a3a;
+            --radius: 12px;
+            --transition: 0.3s;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; scrollbar-width: thin; scrollbar-color: #444 #12121a; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #12121a; }
+        ::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
+
+        body {
+            font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            direction: rtl;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== TOP BAR ===== */
+        .topbar {
+            height: 56px;
+            background: var(--bg-darker);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 50;
+            border-bottom: 1px solid var(--border);
+            gap: 14px;
+            flex-shrink: 0;
+        }
+        .menu-toggle {
+            background: none; border: none; color: #fff;
+            font-size: 28px; cursor: pointer; padding: 4px 10px;
+            border-radius: 8px; transition: var(--transition); line-height: 1;
+        }
+        .menu-toggle:hover { background: var(--bg-hover); }
+        .topbar .logo {
+            font-size: 24px; font-weight: 900;
+            background: linear-gradient(135deg, var(--accent), #ff6b8a);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .topbar .spacer { flex: 1; }
+
+        /* ===== SIDEBAR OVERLAY ===== */
+        .sidebar-overlay {
+            position: fixed; top: 56px; left: 0;
+            width: 100%; height: calc(100% - 56px);
+            background: rgba(0,0,0,0.6); z-index: 55;
+            display: none; transition: opacity 0.3s;
+        }
+        .sidebar-overlay.show { display: block; }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed; top: 56px; left: -280px;
+            width: 260px; height: calc(100vh - 56px);
+            background: var(--bg-darker); z-index: 60;
+            transition: left var(--transition);
+            display: flex; flex-direction: column;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+        }
+        .sidebar.open { left: 0; }
+        .sidebar .side-header {
+            padding: 20px 18px;
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .sidebar .side-logo {
+            font-size: 22px; font-weight: 900;
+            background: linear-gradient(135deg, var(--accent), #ff6b8a);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .sidebar .close-sidebar {
+            background: none; border: none; color: #fff;
+            font-size: 22px; cursor: pointer; padding: 4px 8px;
+            border-radius: 6px; transition: var(--transition);
+        }
+        .sidebar .close-sidebar:hover { background: var(--bg-hover); }
+        .sidebar nav { flex: 1; padding: 10px 0; }
+        .sidebar nav a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 13px 20px; color: var(--text-muted);
+            text-decoration: none; font-size: 15px;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+            cursor: pointer; margin: 2px 0;
+        }
+        .sidebar nav a:hover, .sidebar nav a.active {
+            background: rgba(233,68,96,0.12);
+            color: #fff; border-left-color: var(--accent);
+        }
+        .sidebar nav a .icon { font-size: 20px; width: 26px; text-align: center; }
+
+        /* ===== USER AREA ===== */
+        .sidebar .user-area { padding: 18px; border-top: 1px solid var(--border); text-align: center; }
+        .sidebar .user-area .login-side-btn {
+            width: 100%; background: var(--accent); color: #fff; border: none;
+            padding: 11px; border-radius: 25px; cursor: pointer;
+            font-size: 15px; font-weight: bold; transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+        }
+        .sidebar .user-area .login-side-btn:hover { background: #ff5a75; }
+        .sidebar .user-area .user-box {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg-card); padding: 10px 14px;
+            border-radius: 25px; cursor: pointer; transition: var(--transition);
+        }
+        .sidebar .user-area .user-box:hover { background: var(--bg-hover); }
+        .sidebar .user-area .user-box .user-avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: var(--accent); display: flex;
+            align-items: center; justify-content: center;
+            font-size: 20px; overflow: hidden; flex-shrink: 0;
+        }
+        .sidebar .user-area .user-box .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .sidebar .user-area .user-box .user-name {
+            font-size: 14px; font-weight: bold; color: #fff;
+            flex: 1; text-align: right;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .sidebar .user-area .logout-link {
+            font-size: 12px; color: var(--text-muted);
+            cursor: pointer; margin-top: 8px; display: inline-block;
+        }
+        .sidebar .user-area .logout-link:hover { color: var(--accent); }
+
+        /* ===== MAIN ===== */
+        .main { flex: 1; overflow-y: auto; padding: 20px 24px; height: calc(100vh - 56px); }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* ===== CAROUSEL ===== */
+        .carousel-section { margin-bottom: 28px; position: relative; }
+        .carousel-container {
+            position: relative; overflow: hidden;
+            border-radius: var(--radius); background: var(--bg-card);
+            border: 1px solid var(--border); height: 220px;
+        }
+        .carousel-track { display: flex; transition: transform 0.5s ease; height: 100%; }
+        .carousel-slide {
+            min-width: 100%; height: 100%;
+            display: flex; align-items: center;
+            padding: 20px 70px; gap: 24px; cursor: pointer;
+        }
+        .carousel-slide .slide-cover {
+            width: 120px; height: 170px; border-radius: 10px;
+            background: var(--bg-hover); display: flex;
+            align-items: center; justify-content: center;
+            font-size: 60px; color: #555; flex-shrink: 0;
+            overflow: hidden; border: 2px solid var(--border);
+        }
+        .carousel-slide .slide-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .carousel-slide .slide-info { flex: 1; }
+        .carousel-slide .slide-title { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
+        .carousel-slide .slide-meta { color: var(--text-muted); font-size: 14px; margin-bottom: 8px; }
+        .carousel-slide .slide-rating { color: var(--accent-gold); font-weight: bold; font-size: 16px; }
+        .carousel-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.7); color: #fff;
+            border: 2px solid rgba(255,255,255,0.3);
+            font-size: 22px; width: 44px; height: 44px;
+            cursor: pointer; z-index: 5; border-radius: 50%;
+            transition: var(--transition);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .carousel-btn:hover { background: var(--accent); border-color: var(--accent); }
+        /* FIX: RTL layout — prev is on right, next on left */
+        .carousel-btn.prev { right: 10px; }
+        .carousel-btn.next { left: 10px; }
+        .carousel-dots { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+        .carousel-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #555; cursor: pointer; transition: var(--transition);
+        }
+        .carousel-dot.active { background: var(--accent); width: 24px; border-radius: 6px; }
+
+        /* ===== SEARCH & FILTER ===== */
+        .search-filter-row {
+            display: flex; gap: 14px; margin-bottom: 20px;
+            flex-wrap: wrap; align-items: center;
+        }
+        .search-box { flex: 1; min-width: 250px; position: relative; }
+        .search-box input {
+            width: 100%; padding: 12px 40px 12px 18px;
+            border-radius: 28px; border: 1px solid var(--border);
+            background: var(--bg-card); color: #fff;
+            font-size: 15px; outline: none;
+            transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+        }
+        .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(233,68,96,0.15); }
+        .search-box .search-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+        .filter-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 9px 18px; border-radius: 22px;
+            border: 1px solid var(--border); background: transparent;
+            color: var(--text); cursor: pointer; font-size: 14px;
+            transition: var(--transition); font-family: 'Cairo', sans-serif;
+        }
+        .filter-btn:hover, .filter-btn.active-filter {
+            background: var(--accent); border-color: var(--accent); color: #fff;
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .section-title {
+            font-size: 18px; font-weight: 700;
+            margin-bottom: 16px; color: #fff;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        /* ===== MANGA GRID ===== */
+        .manga-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+            gap: 16px;
+        }
+        .manga-card {
+            background: var(--bg-card); border-radius: var(--radius);
+            overflow: hidden; cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border); position: relative;
+        }
+        .manga-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.4); border-color: var(--accent); }
+        .manga-card .cover {
+            width: 100%; aspect-ratio: 3/4;
+            background: var(--bg-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 48px; color: #555;
+            position: relative; overflow: hidden;
+        }
+        .manga-card .cover img { width: 100%; height: 100%; object-fit: cover; }
+        .manga-card .cover .rating-badge {
+            position: absolute; top: 8px; left: 8px;
+            background: rgba(0,0,0,0.8); color: var(--accent-gold);
+            padding: 4px 10px; border-radius: 15px;
+            font-size: 12px; font-weight: bold;
+        }
+        .manga-card .info { padding: 12px; }
+        .manga-card .info .title {
+            font-size: 14px; font-weight: bold; line-height: 1.4;
+            display: -webkit-box; -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px;
+        }
+        .manga-card .info .meta {
+            font-size: 12px; color: var(--text-muted);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .manga-card .info .views { color: var(--accent-blue); font-size: 12px; }
+        .quick-actions {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,0.9); padding: 8px;
+            display: flex; flex-wrap: wrap; gap: 4px;
+            opacity: 0; transition: opacity 0.3s;
+            pointer-events: none; justify-content: center;
+        }
+        .manga-card:hover .quick-actions { opacity: 1; pointer-events: auto; }
+        .quick-btn {
+            padding: 5px 10px; border-radius: 15px;
+            border: 1px solid var(--border); background: transparent;
+            color: #fff; cursor: pointer; font-size: 11px;
+            transition: var(--transition); white-space: nowrap;
+            font-family: 'Cairo', sans-serif;
+        }
+        .quick-btn:hover { background: var(--accent); border-color: var(--accent); }
+        .quick-btn.added { background: var(--accent-green); border-color: var(--accent-green); color: #000; font-weight: bold; }
+
+        /* ===== DETAILS PAGE ===== */
+        .details-container { display: flex; gap: 30px; flex-wrap: wrap; }
+        .details-cover {
+            width: 240px; flex-shrink: 0; border-radius: var(--radius);
+            overflow: hidden; border: 1px solid var(--border);
+            aspect-ratio: 3/4; background: var(--bg-card);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 80px; color: #555;
+        }
+        .details-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .details-info { flex: 1; min-width: 280px; }
+        .details-info .manga-title { font-size: 26px; font-weight: 900; margin-bottom: 6px; }
+        .details-info .manga-author { color: var(--text-muted); margin-bottom: 10px; font-size: 15px; }
+        .details-info .rating-large { font-size: 32px; color: var(--accent-gold); font-weight: bold; margin-bottom: 14px; }
+        .details-info .genres { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+        .details-info .genre-tag { padding: 5px 14px; background: rgba(233,68,96,0.2); border-radius: 18px; font-size: 13px; color: var(--accent); }
+        .details-info .desc { color: var(--text-muted); line-height: 1.8; margin-bottom: 20px; }
+        .details-info .views-count { color: var(--accent-blue); font-size: 15px; margin-bottom: 14px; }
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .action-btn {
+            padding: 10px 20px; border-radius: 25px;
+            border: 2px solid var(--border); background: transparent;
+            color: #fff; cursor: pointer; font-size: 14px;
+            transition: var(--transition); font-weight: bold;
+            white-space: nowrap; font-family: 'Cairo', sans-serif;
+        }
+        .action-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .action-btn.active-action { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .action-btn.watching-active { background: #4dabf7; border-color: #4dabf7; }
+        .action-btn.completed-active { background: var(--accent-green); border-color: var(--accent-green); }
+        .chapter-navigation {
+            display: flex; align-items: center; gap: 15px;
+            margin-bottom: 20px; background: var(--bg-card);
+            padding: 14px 18px; border-radius: var(--radius);
+            border: 1px solid var(--border); flex-wrap: wrap;
+        }
+        .nav-btn {
+            background: var(--accent); color: #fff; border: none;
+            padding: 9px 20px; border-radius: 22px; cursor: pointer;
+            font-size: 14px; transition: var(--transition); font-weight: bold;
+            font-family: 'Cairo', sans-serif;
+        }
+        .nav-btn:hover { background: #ff5a75; transform: scale(1.04); }
+        .nav-btn:disabled { background: #444; cursor: not-allowed; transform: none; }
+        .chapter-select {
+            background: var(--bg-card); color: #fff;
+            border: 1px solid var(--border); padding: 9px 14px;
+            border-radius: 22px; font-size: 14px;
+            cursor: pointer; outline: none;
+            font-family: 'Cairo', sans-serif;
+        }
+        .chapter-list {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); overflow: hidden; margin-top: 20px;
+        }
+        .chapter-list .ch-header { padding: 14px 18px; font-weight: bold; border-bottom: 1px solid var(--border); font-size: 16px; }
+        .chapter-list .ch-item {
+            padding: 12px 18px; border-bottom: 1px solid var(--border);
+            cursor: pointer; transition: var(--transition);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .chapter-list .ch-item:hover { background: var(--bg-hover); }
+        .chapter-list .ch-item.active-ch { background: rgba(233,68,96,0.2); border-right: 3px solid var(--accent); }
+
+        /* ===== MY LIST ===== */
+        .list-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .list-tab {
+            padding: 10px 20px; border-radius: 22px;
+            border: 1px solid var(--border); background: transparent;
+            color: var(--text); cursor: pointer; font-size: 14px;
+            transition: var(--transition); font-family: 'Cairo', sans-serif;
+        }
+        .list-tab:hover, .list-tab.active-tab { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .list-tab .count { background: rgba(255,255,255,0.2); border-radius: 12px; padding: 2px 10px; margin-right: 6px; font-size: 12px; }
+        .empty-list { text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 17px; }
+        .login-prompt {
+            text-align: center; padding: 50px;
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); font-size: 16px; color: var(--text-muted);
+        }
+
+        /* ===== FRIENDS ===== */
+        .friends-container { max-width: 700px; }
+        .friends-search { display: flex; gap: 10px; margin-bottom: 20px; }
+        .friends-search input {
+            flex: 1; padding: 12px 18px; border-radius: 28px;
+            border: 1px solid var(--border); background: var(--bg-card);
+            color: #fff; font-size: 15px; outline: none;
+            font-family: 'Cairo', sans-serif;
+        }
+        .friends-search button {
+            background: var(--accent); color: #fff; border: none;
+            padding: 12px 24px; border-radius: 28px; cursor: pointer;
+            font-size: 15px; font-weight: bold; font-family: 'Cairo', sans-serif;
+        }
+        .friend-card {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 18px; background: var(--bg-card);
+            border-radius: var(--radius); border: 1px solid var(--border);
+            margin-bottom: 10px; transition: var(--transition);
+        }
+        .friend-card:hover { background: var(--bg-hover); }
+        .friend-card .friend-avatar {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--accent); display: flex;
+            align-items: center; justify-content: center;
+            font-size: 22px; overflow: hidden; flex-shrink: 0;
+        }
+        .friend-card .friend-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .friend-card .friend-info { flex: 1; }
+        .friend-card .friend-name { font-weight: bold; font-size: 15px; }
+        .friend-card .friend-meta { font-size: 12px; color: var(--text-muted); }
+        .friend-card .friend-action button {
+            background: transparent; border: 1px solid var(--border);
+            color: #fff; padding: 7px 16px; border-radius: 20px;
+            cursor: pointer; font-size: 13px; transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+        }
+        .friend-card .friend-action button:hover { background: var(--accent); border-color: var(--accent); }
+
+        /* ===== LEADERBOARD ===== */
+        .leaderboard-table { width: 100%; border-collapse: collapse; }
+        .leaderboard-table th {
+            background: var(--bg-card); padding: 14px 18px;
+            text-align: right; font-size: 14px; color: var(--text-muted);
+            border-bottom: 2px solid var(--border);
+        }
+        .leaderboard-table td {
+            padding: 14px 18px; border-bottom: 1px solid var(--border);
+            font-size: 14px; vertical-align: middle;
+        }
+        .leaderboard-table tr:hover td { background: var(--bg-hover); }
+        .rank-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 34px; height: 34px; border-radius: 50%; font-weight: 900; font-size: 14px;
+        }
+        .rank-1 { background: linear-gradient(135deg,#f5c518,#e09b00); color: #000; }
+        .rank-2 { background: linear-gradient(135deg,#c0c0c0,#888); color: #000; }
+        .rank-3 { background: linear-gradient(135deg,#cd7f32,#8b4513); color: #fff; }
+        .rank-other { background: var(--bg-hover); color: var(--text-muted); }
+        .lb-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--accent); display: inline-flex;
+            align-items: center; justify-content: center; font-size: 18px;
+        }
+        .lb-stat { color: var(--accent-blue); font-weight: bold; }
+        .lb-stat-read { color: var(--accent-green); font-weight: bold; }
+
+        /* ===== ADMIN PANEL ===== */
+        .admin-section {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 24px; margin-bottom: 20px;
+        }
+        .admin-section h3 { font-size: 17px; font-weight: 700; margin-bottom: 18px; color: #fff; }
+        .form-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+        .form-group { flex: 1; min-width: 200px; }
+        .form-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 10px 14px; border-radius: 8px;
+            border: 1px solid var(--border); background: var(--bg-dark);
+            color: #fff; font-size: 14px; outline: none;
+            transition: var(--transition); font-family: 'Cairo', sans-serif;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--accent); box-shadow: 0 0 0 2px rgba(233,68,96,0.15);
+        }
+        .form-group textarea { min-height: 90px; resize: vertical; }
+        .btn-primary {
+            background: var(--accent); color: #fff; border: none;
+            padding: 12px 28px; border-radius: 25px; cursor: pointer;
+            font-size: 15px; font-weight: bold; transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+        }
+        .btn-primary:hover { background: #ff5a75; transform: scale(1.03); }
+        .btn-danger {
+            background: transparent; color: var(--accent);
+            border: 1px solid var(--accent); padding: 6px 14px;
+            border-radius: 18px; cursor: pointer; font-size: 12px;
+            transition: var(--transition); font-family: 'Cairo', sans-serif;
+        }
+        .btn-danger:hover { background: var(--accent); color: #fff; }
+        .chapter-builder { margin-top: 14px; }
+        .chapter-entry {
+            display: flex; gap: 10px; margin-bottom: 8px; align-items: center; flex-wrap: wrap;
+        }
+        .chapter-entry input { flex: 1; min-width: 120px; }
+        .manga-list-admin { margin-top: 14px; }
+        .manga-admin-item {
+            display: flex; align-items: center; gap: 14px; padding: 12px 16px;
+            background: var(--bg-dark); border-radius: 8px; margin-bottom: 8px;
+            border: 1px solid var(--border);
+        }
+        .manga-admin-item .mai-title { flex: 1; font-weight: bold; font-size: 14px; }
+        .manga-admin-item .mai-info { font-size: 12px; color: var(--text-muted); }
+        .genre-checkboxes { display: flex; flex-wrap: wrap; gap: 8px; }
+        .genre-checkbox { display: none; }
+        .genre-label {
+            padding: 6px 14px; border-radius: 18px;
+            border: 1px solid var(--border); cursor: pointer;
+            font-size: 13px; transition: var(--transition); color: var(--text-muted);
+        }
+        .genre-checkbox:checked + .genre-label { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .admin-warning {
+            background: rgba(245,197,24,0.1); border: 1px solid rgba(245,197,24,0.3);
+            border-radius: 8px; padding: 12px 16px; margin-bottom: 20px;
+            color: var(--accent-gold); font-size: 14px;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 100;
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: var(--bg-card); border-radius: var(--radius);
+            padding: 30px; width: 90%; max-width: 420px;
+            text-align: center; border: 1px solid var(--border);
+        }
+        .modal h3 { margin-bottom: 20px; font-size: 22px; }
+        .modal .login-options { display: flex; flex-direction: column; gap: 12px; }
+        .social-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 14px; border-radius: 12px; border: none; color: #fff;
+            font-size: 16px; cursor: pointer; font-weight: bold;
+            transition: var(--transition); font-family: 'Cairo', sans-serif;
+        }
+        .social-btn.discord { background: #5865F2; }
+        .social-btn.google { background: #fff; color: #333; border: 1px solid #ddd; }
+        .social-btn:hover { opacity: 0.9; transform: scale(1.02); }
+        .modal .close-modal {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text); margin-top: 12px; padding: 10px 24px;
+            border-radius: 25px; cursor: pointer; font-size: 14px;
+            width: 100%; font-family: 'Cairo', sans-serif;
+        }
+        .modal .divider { color: var(--text-muted); margin: 10px 0; font-size: 13px; }
+        .modal input {
+            width: 100%; padding: 12px; border-radius: 8px;
+            border: 1px solid var(--border); background: var(--bg-dark);
+            color: #fff; font-size: 15px; outline: none; margin-bottom: 10px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%); background: #333; color: #fff;
+            padding: 14px 28px; border-radius: 30px; z-index: 200;
+            font-size: 15px; opacity: 0; transition: opacity 0.4s; pointer-events: none;
+        }
+        .toast.show { opacity: 1; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .manga-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+            .details-container { flex-direction: column; align-items: center; }
+            .details-cover { width: 160px; }
+            .carousel-container { height: 160px; }
+            .carousel-slide { padding: 10px 50px; }
+            .carousel-slide .slide-cover { width: 80px; height: 110px; font-size: 40px; }
+            .carousel-slide .slide-title { font-size: 16px; }
+            .carousel-btn { width: 34px; height: 34px; font-size: 16px; }
+            .sidebar { width: 240px; left: -260px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <button class="menu-toggle" onclick="toggleSidebar()" title="القائمة">☰</button>
+        <span class="logo">الهاوية</span>
+        <span class="spacer"></span>
+    </div>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="side-header">
+            <span class="side-logo">الهاوية</span>
+            <button class="close-sidebar" onclick="closeSidebar()">✕</button>
+        </div>
+        <nav>
+            <a class="active" data-page="home" onclick="goToPage('home')">
+                <span class="icon">🏠</span> الرئيسية
+            </a>
+            <a data-page="mylist" onclick="goToPage('mylist')">
+                <span class="icon">📚</span> مكتبتي
+            </a>
+            <a data-page="friends" onclick="goToPage('friends')">
+                <span class="icon">👥</span> أصدقائي
+            </a>
+            <a data-page="leaderboard" onclick="goToPage('leaderboard')">
+                <span class="icon">📊</span> المتصدرون
+            </a>
+            <a data-page="admin" onclick="goToPage('admin')">
+                <span class="icon">⚙️</span> لوحة الإدارة
+            </a>
+        </nav>
+        <div class="user-area" id="sidebarUserArea"></div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main" id="mainContent">
+
+        <!-- HOME -->
+        <section class="page active" id="page-home">
+            <div class="carousel-section">
+                <div class="section-title">🔥 الأعلى مشاهدةً</div>
+                <div class="carousel-container" id="carouselContainer">
+                    <button class="carousel-btn prev" onclick="moveCarousel(-1)" title="السابق">◀</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(1)" title="التالي">▶</button>
+                    <div class="carousel-track" id="carouselTrack"></div>
+                </div>
+                <div class="carousel-dots" id="carouselDots"></div>
+            </div>
+
+            <div class="search-filter-row">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="ابحث عن اسم العمل أو المؤلف...">
+                </div>
+                <div class="filter-btns" id="filterBtns">
+                    <button class="filter-btn active-filter" data-genre="الكل">الكل</button>
+                    <button class="filter-btn" data-genre="أكشن">أكشن</button>
+                    <button class="filter-btn" data-genre="فانتازيا">فانتازيا</button>
+                    <button class="filter-btn" data-genre="دراما">دراما</button>
+                    <button class="filter-btn" data-genre="غموض">غموض</button>
+                    <button class="filter-btn" data-genre="كوميديا">كوميديا</button>
+                </div>
+            </div>
+
+            <div class="section-title">📖 الأحدث إضافةً</div>
+            <div class="manga-grid" id="mangaGrid"></div>
+        </section>
+
+        <!-- DETAILS -->
+        <section class="page" id="page-details">
+            <button class="filter-btn" onclick="goToPage('home')" style="margin-bottom:15px;">⬅️ العودة للمكتبة</button>
+            <div class="details-container">
+                <div class="details-cover" id="detailsCover">📖</div>
+                <div class="details-info">
+                    <div class="manga-title" id="detailsTitle"></div>
+                    <div class="manga-author" id="detailsAuthor"></div>
+                    <div class="rating-large" id="detailsRating"></div>
+                    <div class="views-count" id="detailsViews"></div>
+                    <div class="genres" id="detailsGenres"></div>
+                    <div class="desc" id="detailsDesc"></div>
+                    <div class="action-buttons" id="detailsActionButtons"></div>
+                    <div class="chapter-navigation">
+                        <button class="nav-btn" id="prevChapterBtn" onclick="navigateChapter(-1)">⬅️ السابق</button>
+                        <select class="chapter-select" id="chapterSelect" onchange="jumpToChapter(this.value)"></select>
+                        <button class="nav-btn" id="nextChapterBtn" onclick="navigateChapter(1)">التالي ➡️</button>
+                    </div>
+                </div>
+            </div>
+            <div class="chapter-list">
+                <div class="ch-header">📑 قائمة الفصول</div>
+                <div id="chapterList"></div>
+            </div>
+        </section>
+
+        <!-- MY LIST -->
+        <section class="page" id="page-mylist">
+            <div class="section-title">📚 مكتبتي</div>
+            <div class="list-tabs" id="myListTabs">
+                <button class="list-tab active-tab" data-list="watching">📖 <span class="count">0</span> أشاهدها حاليًا</button>
+                <button class="list-tab" data-list="want">💖 <span class="count">0</span> أرغب بمشاهدتها</button>
+                <button class="list-tab" data-list="completed">✅ <span class="count">0</span> أتممت مشاهدتها</button>
+                <button class="list-tab" data-list="dropped">🚫 <span class="count">0</span> لا أرغب بمشاهدتها</button>
+            </div>
+            <div id="mylistContent"></div>
+        </section>
+
+        <!-- FRIENDS -->
+        <section class="page" id="page-friends">
+            <div class="section-title">👥 أصدقائي</div>
+            <div id="friendsContainer" class="friends-container"></div>
+        </section>
+
+        <!-- LEADERBOARD -->
+        <section class="page" id="page-leaderboard">
+            <div class="section-title">🏆 لوحة المتصدرين</div>
+            <div id="leaderboardContent"></div>
+        </section>
+
+        <!-- ADMIN -->
+        <section class="page" id="page-admin">
+            <div class="section-title">⚙️ لوحة الإدارة</div>
+            <div class="admin-warning">
+                ⚠️ هذه اللوحة مخصصة للمسؤولين فقط. عند ربط السيرفر ستُحفظ البيانات على قاعدة البيانات تلقائيًا.
+            </div>
+
+            <!-- إضافة مانجا جديدة -->
+            <div class="admin-section">
+                <h3>➕ إضافة عمل جديد</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>اسم العمل (عربي) *</label>
+                        <input type="text" id="adminTitle" placeholder="مثال: البطل المتخلى عنه">
+                    </div>
+                    <div class="form-group">
+                        <label>اسم المؤلف *</label>
+                        <input type="text" id="adminAuthor" placeholder="مثال: KIM Hyun-soo">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>رابط الغلاف (URL)</label>
+                        <input type="text" id="adminCover" placeholder="https://example.com/cover.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label>التقييم (1-10)</label>
+                        <input type="number" id="adminRating" min="1" max="10" step="0.1" value="8.0">
+                    </div>
+                    <div class="form-group">
+                        <label>الحالة</label>
+                        <select id="adminStatus">
+                            <option value="مستمر">مستمر</option>
+                            <option value="مكتمل">مكتمل</option>
+                            <option value="متوقف">متوقف</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>التصنيفات</label>
+                        <div class="genre-checkboxes">
+                            <input class="genre-checkbox" type="checkbox" id="g1" value="أكشن"><label class="genre-label" for="g1">أكشن</label>
+                            <input class="genre-checkbox" type="checkbox" id="g2" value="فانتازيا"><label class="genre-label" for="g2">فانتازيا</label>
+                            <input class="genre-checkbox" type="checkbox" id="g3" value="دراما"><label class="genre-label" for="g3">دراما</label>
+                            <input class="genre-checkbox" type="checkbox" id="g4" value="غموض"><label class="genre-label" for="g4">غموض</label>
+                            <input class="genre-checkbox" type="checkbox" id="g5" value="كوميديا"><label class="genre-label" for="g5">كوميديا</label>
+                            <input class="genre-checkbox" type="checkbox" id="g6" value="رومانسي"><label class="genre-label" for="g6">رومانسي</label>
+                            <input class="genre-checkbox" type="checkbox" id="g7" value="مغامرات"><label class="genre-label" for="g7">مغامرات</label>
+                            <input class="genre-checkbox" type="checkbox" id="g8" value="شريحة حياة"><label class="genre-label" for="g8">شريحة حياة</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>وصف العمل *</label>
+                        <textarea id="adminDesc" placeholder="اكتب وصفًا مختصرًا للعمل..."></textarea>
+                    </div>
+                </div>
+
+                <!-- منشئ الفصول -->
+                <h3 style="margin-top:6px;">📑 إضافة الفصول</h3>
+                <div class="chapter-builder" id="chapterBuilder">
+                    <div class="chapter-entry" id="chEntry_1">
+                        <input type="number" placeholder="رقم الفصل" value="1" style="width:100px;flex:unset">
+                        <input type="text" placeholder="عنوان الفصل (عربي)">
+                        <input type="number" placeholder="عدد الصفحات" value="24" style="width:110px;flex:unset">
+                        <button class="btn-danger" onclick="removeChapterEntry(1)">حذف</button>
+                    </div>
+                </div>
+                <button class="filter-btn" onclick="addChapterEntry()" style="margin-top:10px;margin-bottom:18px;">
+                    ➕ إضافة فصل آخر
+                </button>
+                <br>
+                <button class="btn-primary" onclick="adminAddManga()">💾 حفظ العمل</button>
+            </div>
+
+            <!-- قائمة الأعمال الحالية -->
+            <div class="admin-section">
+                <h3>📋 الأعمال الحالية (<span id="adminMangaCount">0</span>)</h3>
+                <div class="manga-list-admin" id="adminMangaList"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- LOGIN MODAL -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <h3>🔑 تسجيل الدخول</h3>
+            <div class="login-options">
+                <button class="social-btn discord" onclick="loginWithDiscord()">🎮 تسجيل الدخول بـ ديسكورد</button>
+                <button class="social-btn google" id="googleLoginBtn">🔵 تسجيل الدخول بـ جوجل</button>
+            </div>
+            <div class="divider">أو دخول سريع</div>
+            <input type="text" id="guestName" placeholder="اسم المستخدم">
+            <button onclick="loginAsGuest()" style="width:100%;background:var(--accent);color:#fff;border:none;padding:12px;border-radius:8px;cursor:pointer;font-size:15px;font-weight:bold;font-family:'Cairo',sans-serif;">
+                دخول كضيف
+            </button>
+            <button class="close-modal" onclick="closeLoginModal()">إلغاء</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    // ==================== SUPABASE CONFIG ====================
+    // ⚠️ ضع هنا بياناتك من Supabase بعد ما تعمل الجداول
+    const SUPABASE_URL = 'https://zquyhrshnctwilxggcyi.supabase.co';   // ← غيّر ده
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdXlocnNobmN0d2lseGdnY3lpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDU3MTUsImV4cCI6MjA5NDI4MTcxNX0.En9CcuL14vXP2LlgKLsTrg1DcJSPkEnZem7E2a-lgQI';                  // ← غيّر ده
+
+    const SB = {
+        headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY
+        },
+
+        async get(table, query = '') {
+            const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, { headers: SB.headers });
+            if (!r.ok) throw await r.json();
+            return r.json();
+        },
+
+        async post(table, body) {
+            const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+                method: 'POST',
+                headers: { ...SB.headers, 'Prefer': 'return=representation' },
+                body: JSON.stringify(body)
+            });
+            if (!r.ok) throw await r.json();
+            return r.json();
+        },
+
+        async patch(table, id, body) {
+            const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+                method: 'PATCH',
+                headers: { ...SB.headers, 'Prefer': 'return=representation' },
+                body: JSON.stringify(body)
+            });
+            if (!r.ok) throw await r.json();
+            return r.json();
+        },
+
+        async delete(table, id) {
+            const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+                method: 'DELETE',
+                headers: SB.headers
+            });
+            if (!r.ok) throw await r.json();
+        }
+    };
+
+    // ==================== STATE ====================
+    let mangaList = [];
+    let allUsers = [];
+    let currentPage = 'home';
+    let currentMangaId = null;
+    let currentChapterIndex = 0;
+    let currentFilter = 'الكل';
+    let carouselIndex = 0;
+    let loggedInUser = null;
+    let userLists = { watching: [], want: [], completed: [], dropped: [] };
+    let friendsList = [];
+    let chapterEntryCount = 1;
+    let isLoading = false;
+
+    // ==================== LOADING UI ====================
+    function showLoading(msg = 'جاري التحميل...') {
+        let el = document.getElementById('globalLoader');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'globalLoader';
+            el.style.cssText = 'position:fixed;top:56px;left:0;width:100%;height:4px;background:linear-gradient(90deg,var(--accent),#ff6b8a,var(--accent));background-size:200%;animation:loadbar 1s linear infinite;z-index:999;';
+            document.head.insertAdjacentHTML('beforeend', '<style>@keyframes loadbar{0%{background-position:0%}100%{background-position:200%}}</style>');
+            document.body.appendChild(el);
+        }
+        el.style.display = 'block';
+    }
+
+    function hideLoading() {
+        const el = document.getElementById('globalLoader');
+        if (el) el.style.display = 'none';
+    }
+
+    // ==================== DB FUNCTIONS ====================
+    async function loadMangaFromDB() {
+        showLoading();
+        try {
+            const rows = await SB.get('manga', 'order=views.desc');
+            mangaList = rows.map(r => ({
+                id: r.id,
+                title: r.title,
+                author: r.author,
+                cover: r.cover || '',
+                rating: r.rating,
+                genres: Array.isArray(r.genres) ? r.genres : JSON.parse(r.genres || '[]'),
+                status: r.status,
+                views: r.views || 0,
+                description: r.description,
+                chapters: Array.isArray(r.chapters) ? r.chapters : JSON.parse(r.chapters || '[]')
+            }));
+        } catch (e) {
+            console.error('خطأ في تحميل المانجا:', e);
+            showToast('❌ تأكد من إعداد Supabase في الكود');
+            mangaList = [];
+        }
+        hideLoading();
+    }
+
+    async function loadUsersFromDB() {
+        try {
+            allUsers = await SB.get('users', 'order=read_count.desc');
+        } catch (e) {
+            allUsers = [];
+        }
+    }
+
+    async function saveMangaData() {
+        // لا شيء — البيانات بتتحفظ مباشرة في Supabase عبر adminAddManga/adminDeleteManga
+    }
+
+    // ==================== INIT ====================
+    async function init() {
+        loadUserSession();
+        updateSidebarUser();
+        setupFilters();
+        setupSearch();
+        await loadMangaFromDB();
+        renderCarousel();
+        renderMangaGrid();
+        await loadUsersFromDB();
+    }
+
+    // ==================== SIDEBAR ====================
+    function toggleSidebar() {
+        const s = document.getElementById('sidebar');
+        const o = document.getElementById('sidebarOverlay');
+        if (s.classList.contains('open')) {
+            closeSidebar();
+        } else {
+            s.classList.add('open');
+            o.classList.add('show');
+        }
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('show');
+    }
+
+    function updateSidebarUser() {
+        const a = document.getElementById('sidebarUserArea');
+        if (loggedInUser) {
+            a.innerHTML = `
+                <div class="user-box" onclick="showUserMenu()">
+                    <div class="user-avatar">${loggedInUser.avatar ? `<img src="${loggedInUser.avatar}" alt="">` : '👤'}</div>
+                    <div class="user-name">${loggedInUser.name}</div>
+                </div>
+                <span class="logout-link" onclick="logout()">تسجيل خروج</span>`;
+        } else {
+            a.innerHTML = '<button class="login-side-btn" onclick="openLoginModal()">🔑 تسجيل الدخول</button>';
+        }
+    }
+
+    function showUserMenu() {
+        if (confirm(`${loggedInUser.name}\n\nهل تريد تسجيل الخروج؟`)) logout();
+    }
+
+    // ==================== NAVIGATION ====================
+    function goToPage(p) {
+        currentPage = p;
+        document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.sidebar nav a[data-page="${p}"]`);
+        if (link) link.classList.add('active');
+        document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+        const pageEl = document.getElementById('page-' + p);
+        if (pageEl) pageEl.classList.add('active');
+        if (p === 'mylist') renderMyList();
+        if (p === 'friends') renderFriendsPage();
+        if (p === 'leaderboard') renderLeaderboard();
+        if (p === 'admin') renderAdminPanel();
+        document.getElementById('mainContent').scrollTop = 0;
+        closeSidebar();
+    }
+
+    // ==================== CAROUSEL (FIXED) ====================
+    function renderCarousel() {
+        const sorted = [...mangaList].sort((a, b) => b.views - a.views);
+        document.getElementById('carouselTrack').innerHTML = sorted.map(m => `
+            <div class="carousel-slide" onclick="openMangaDetails(${m.id})">
+                <div class="slide-cover">${m.cover ? `<img src="${m.cover}" alt="${m.title}">` : '📖'}</div>
+                <div class="slide-info">
+                    <div class="slide-title">${m.title}</div>
+                    <div class="slide-meta">${m.author} · ${m.status} · 👁️ ${formatViews(m.views)}</div>
+                    <div class="slide-rating">⭐ ${m.rating}</div>
+                </div>
+            </div>`).join('');
+
+        document.getElementById('carouselDots').innerHTML = sorted.map((_, i) =>
+            `<div class="carousel-dot${i === 0 ? ' active' : ''}" onclick="carouselIndex=${i};updateCarousel()"></div>`
+        ).join('');
+        carouselIndex = 0;
+        updateCarousel();
+    }
+
+    function moveCarousel(dir) {
+        const total = mangaList.length;
+        if (!total) return;
+        carouselIndex = (carouselIndex + dir + total) % total;
+        updateCarousel();
+    }
+
+    function updateCarousel() {
+        const track = document.getElementById('carouselTrack');
+        // FIX: RTL direction needs negative translateX to go forward
+        if (track) track.style.transform = `translateX(${carouselIndex * 100}%)`;
+        document.querySelectorAll('.carousel-dot').forEach((d, i) =>
+            d.classList.toggle('active', i === carouselIndex));
+    }
+
+    setInterval(() => { if (currentPage === 'home') moveCarousel(1); }, 5000);
+
+    function formatViews(v) { return v >= 1000 ? (v / 1000).toFixed(1) + 'K' : v; }
+
+    // ==================== MANGA GRID ====================
+    function renderMangaGrid(f = 'الكل', s = '') {
+        currentFilter = f;
+        const g = document.getElementById('mangaGrid');
+        let fl = mangaList;
+        if (f !== 'الكل') fl = fl.filter(m => m.genres.includes(f));
+        if (s) {
+            const t = s.toLowerCase();
+            fl = fl.filter(m => m.title.toLowerCase().includes(t) || m.author.toLowerCase().includes(t));
+        }
+        g.innerHTML = fl.map(m => {
+            const st = getMangaListStatuses(m.id);
+            return `
+            <div class="manga-card" onclick="openMangaDetails(${m.id})">
+                <div class="cover">
+                    ${m.cover ? `<img src="${m.cover}" alt="${m.title}">` : '📖'}
+                    <span class="rating-badge">⭐ ${m.rating}</span>
+                </div>
+                <div class="info">
+                    <div class="title">${m.title}</div>
+                    <div class="meta"><span>${m.author}</span><span class="views">👁️ ${formatViews(m.views)}</span></div>
+                </div>
+                <div class="quick-actions" onclick="event.stopPropagation();">
+                    <button class="quick-btn${st.watching ? ' added' : ''}" onclick="toggleList(${m.id},'watching');renderMangaGrid(currentFilter,document.getElementById('searchInput')?.value||'')">
+                        📖 ${st.watching ? '✅' : 'أشاهد'}
+                    </button>
+                    <button class="quick-btn${st.want ? ' added' : ''}" onclick="toggleList(${m.id},'want');renderMangaGrid(currentFilter,document.getElementById('searchInput')?.value||'')">
+                        💖 ${st.want ? '✅' : 'أرغب'}
+                    </button>
+                    <button class="quick-btn${st.completed ? ' added' : ''}" onclick="toggleList(${m.id},'completed');renderMangaGrid(currentFilter,document.getElementById('searchInput')?.value||'')">
+                        ✅ ${st.completed ? '✅' : 'أتممت'}
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+        if (!fl.length) g.innerHTML = '<p style="color:var(--text-muted);text-align:center;grid-column:1/-1;padding:40px;">لا توجد نتائج 😕</p>';
+    }
+
+    function getMangaListStatuses(id) {
+        return {
+            watching: (userLists.watching || []).includes(id),
+            want: (userLists.want || []).includes(id),
+            completed: (userLists.completed || []).includes(id),
+            dropped: (userLists.dropped || []).includes(id)
+        };
+    }
+
+    function toggleList(mid, lt) {
+        if (!loggedInUser) { openLoginModal(); showToast('🔒 يرجى تسجيل الدخول أولاً'); return; }
+        if (!userLists[lt]) userLists[lt] = [];
+        const i = userLists[lt].indexOf(mid);
+        if (i > -1) {
+            userLists[lt].splice(i, 1);
+            showToast('🗑️ تمت الإزالة');
+        } else {
+            Object.keys(userLists).forEach(k => {
+                if (k !== lt && userLists[k]) userLists[k] = userLists[k].filter(id => id !== mid);
+            });
+            userLists[lt].push(mid);
+            showToast('✅ تمت الإضافة!');
+        }
+        saveToStorage();
+        renderMangaGrid(currentFilter, document.getElementById('searchInput')?.value || '');
+        if (currentPage === 'mylist') renderMyList();
+        if (currentPage === 'details' && currentMangaId === mid)
+            renderMangaDetails(mangaList.find(m => m.id === mid));
+    }
+
+    function setupFilters() {
+        document.querySelectorAll('#filterBtns .filter-btn').forEach(b => b.addEventListener('click', function () {
+            document.querySelectorAll('#filterBtns .filter-btn').forEach(x => x.classList.remove('active-filter'));
+            this.classList.add('active-filter');
+            currentFilter = this.getAttribute('data-genre');
+            renderMangaGrid(currentFilter, document.getElementById('searchInput').value);
+        }));
+    }
+
+    function setupSearch() {
+        document.getElementById('searchInput').addEventListener('input', function () {
+            renderMangaGrid(currentFilter, this.value);
+        });
+    }
+
+    // ==================== DETAILS ====================
+    function openMangaDetails(id) {
+        currentMangaId = id;
+        const m = mangaList.find(x => x.id === id);
+        if (!m) return;
+        currentChapterIndex = 0;
+        goToPage('details');
+        renderMangaDetails(m);
+    }
+
+    function renderMangaDetails(m) {
+        document.getElementById('detailsCover').innerHTML = m.cover ? `<img src="${m.cover}" alt="${m.title}">` : '📖';
+        document.getElementById('detailsTitle').textContent = m.title;
+        document.getElementById('detailsAuthor').textContent = '✍️ ' + m.author;
+        document.getElementById('detailsRating').textContent = '⭐ ' + m.rating;
+        document.getElementById('detailsViews').textContent = '👁️ ' + formatViews(m.views) + ' مشاهدة';
+        document.getElementById('detailsGenres').innerHTML = m.genres.map(g => `<span class="genre-tag">${g}</span>`).join('');
+        document.getElementById('detailsDesc').textContent = m.description;
+        const st = getMangaListStatuses(m.id);
+        document.getElementById('detailsActionButtons').innerHTML = `
+            <button class="action-btn${st.watching ? ' watching-active' : ''}" onclick="toggleList(${m.id},'watching');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">
+                📖 ${st.watching ? '✅ تشاهدها' : 'أشاهدها حاليًا'}
+            </button>
+            <button class="action-btn${st.want ? ' active-action' : ''}" onclick="toggleList(${m.id},'want');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">
+                💖 ${st.want ? '✅ مرغوبة' : 'أرغب بمشاهدتها'}
+            </button>
+            <button class="action-btn${st.completed ? ' completed-active' : ''}" onclick="toggleList(${m.id},'completed');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">
+                ✅ ${st.completed ? '✅ مكتملة' : 'أتممت مشاهدتها'}
+            </button>
+            <button class="action-btn${st.dropped ? ' active-action' : ''}" onclick="toggleList(${m.id},'dropped');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">
+                🚫 ${st.dropped ? '✅ مهملة' : 'لا أرغب بها'}
+            </button>`;
+        document.getElementById('chapterSelect').innerHTML = m.chapters.map((ch, i) =>
+            `<option value="${i}"${i === currentChapterIndex ? ' selected' : ''}>📄 فصل ${ch.number}: ${ch.title}</option>`
+        ).join('');
+        renderChapterList(m);
+        updateNavButtons(m);
+    }
+
+    function renderChapterList(m) {
+        document.getElementById('chapterList').innerHTML = m.chapters.map((ch, i) => `
+            <div class="ch-item${i === currentChapterIndex ? ' active-ch' : ''}" onclick="selectChapter(${i})">
+                <span>📄 فصل ${ch.number}: ${ch.title}</span>
+                <span style="color:var(--text-muted);font-size:12px;">${ch.pages} صفحة</span>
+            </div>`).join('');
+    }
+
+    function selectChapter(i) {
+        currentChapterIndex = i;
+        document.getElementById('chapterSelect').value = i;
+        const m = mangaList.find(x => x.id === currentMangaId);
+        if (m) { renderChapterList(m); updateNavButtons(m); }
+    }
+
+    function jumpToChapter(v) { selectChapter(parseInt(v)); }
+
+    function navigateChapter(d) {
+        const m = mangaList.find(x => x.id === currentMangaId);
+        if (m) {
+            const ni = currentChapterIndex + d;
+            if (ni >= 0 && ni < m.chapters.length) selectChapter(ni);
+        }
+    }
+
+    function updateNavButtons(m) {
+        document.getElementById('prevChapterBtn').disabled = currentChapterIndex === 0;
+        document.getElementById('nextChapterBtn').disabled = currentChapterIndex === m.chapters.length - 1;
+    }
+
+    // ==================== MY LIST ====================
+    function renderMyList() {
+        const c = document.getElementById('mylistContent');
+        if (!loggedInUser) {
+            c.innerHTML = '<div class="login-prompt">🔒 يرجى <button onclick="openLoginModal()" style="background:var(--accent);color:#fff;border:none;padding:10px 28px;border-radius:25px;cursor:pointer;font-size:15px;margin-top:14px;font-family:Cairo,sans-serif;">تسجيل الدخول</button> لعرض مكتبتك الشخصية</div>';
+            return;
+        }
+        const t = document.querySelector('#myListTabs .list-tab.active-tab');
+        const lt = t ? t.getAttribute('data-list') : 'watching';
+        const items = (userLists[lt] || []).map(id => mangaList.find(m => m.id === id)).filter(Boolean);
+        c.innerHTML = items.length === 0
+            ? '<div class="empty-list">📭 لا توجد أعمال في هذه القائمة حاليًا</div>'
+            : '<div class="manga-grid" style="margin-top:10px;">' + items.map(m => `
+                <div class="manga-card" onclick="openMangaDetails(${m.id})">
+                    <div class="cover">${m.cover ? `<img src="${m.cover}" alt="${m.title}">` : '📖'}<span class="rating-badge">⭐ ${m.rating}</span></div>
+                    <div class="info"><div class="title">${m.title}</div><div class="meta">${m.author} · 👁️ ${formatViews(m.views)}</div></div>
+                </div>`).join('') + '</div>';
+        updateTabCounts();
+    }
+
+    function updateTabCounts() {
+        document.querySelectorAll('#myListTabs .list-tab').forEach(t => {
+            t.querySelector('.count').textContent = (userLists[t.getAttribute('data-list')] || []).length;
+        });
+    }
+
+    document.getElementById('myListTabs').addEventListener('click', function (e) {
+        if (e.target.closest('.list-tab')) {
+            document.querySelectorAll('#myListTabs .list-tab').forEach(t => t.classList.remove('active-tab'));
+            e.target.closest('.list-tab').classList.add('active-tab');
+            renderMyList();
+        }
+    });
+
+    // ==================== LEADERBOARD ====================
+    function renderLeaderboard() {
+        const container = document.getElementById('leaderboardContent');
+
+        // إذا كان اليوزر مسجل، أضفه لحساب الترتيب
+        let players = [...allUsers];
+        if (loggedInUser) {
+            const totalRead = Object.values(userLists).flat().length;
+            const existing = players.find(p => p.id === loggedInUser.id);
+            if (!existing) {
+                players.push({ ...loggedInUser, read: totalRead, friends: friendsList.length });
+            } else {
+                existing.read = totalRead;
+                existing.friends = friendsList.length;
+            }
+        }
+
+        // ترتيب بالأكثر قراءةً
+        players.sort((a, b) => (b.read || 0) - (a.read || 0));
+
+        container.innerHTML = `
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px;">المركز</th>
+                        <th></th>
+                        <th>المستخدم</th>
+                        <th>الأعمال المقروءة</th>
+                        <th>الأصدقاء</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${players.map((u, i) => {
+                        const rank = i + 1;
+                        const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-other';
+                        const rankIcon = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+                        const isMe = loggedInUser && u.id === loggedInUser.id;
+                        return `
+                        <tr style="${isMe ? 'background:rgba(233,68,96,0.08);' : ''}">
+                            <td><span class="rank-badge ${rankClass}">${rankIcon}</span></td>
+                            <td><div class="lb-avatar">${u.avatar ? `<img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : '👤'}</div></td>
+                            <td>
+                                <strong>${u.name}</strong>${isMe ? ' <span style="color:var(--accent);font-size:12px;">(أنت)</span>' : ''}
+                                <div style="font-size:12px;color:var(--text-muted);">${u.bio || ''}</div>
+                            </td>
+                            <td class="lb-stat-read">📚 ${u.read || 0}</td>
+                            <td class="lb-stat">👥 ${u.friends || 0}</td>
+                        </tr>`;
+                    }).join('')}
+                </tbody>
+            </table>`;
+    }
+
+    // ==================== FRIENDS ====================
+    function renderFriendsPage() {
+        const c = document.getElementById('friendsContainer');
+        if (!loggedInUser) {
+            c.innerHTML = '<div class="login-prompt">🔒 يرجى <button onclick="openLoginModal()" style="background:var(--accent);color:#fff;border:none;padding:10px 28px;border-radius:25px;cursor:pointer;font-size:15px;margin-top:14px;font-family:Cairo,sans-serif;">تسجيل الدخول</button></div>';
+            return;
+        }
+        c.innerHTML = `
+            <div class="friends-search">
+                <input type="text" id="friendSearchInput" placeholder="🔍 ابحث عن مستخدمين...">
+                <button onclick="searchFriends()">بحث</button>
+            </div>
+            <div id="friendsResults"></div>`;
+        renderFriendsList();
+    }
+
+    function renderFriendsList() {
+        const r = document.getElementById('friendsResults');
+        if (!r) return;
+        r.innerHTML = friendsList.length === 0
+            ? '<p style="color:var(--text-muted);text-align:center;padding:30px;">لا يوجد أصدقاء بعد 🔍</p>'
+            : friendsList.map(f => `
+                <div class="friend-card">
+                    <div class="friend-avatar">${f.avatar ? `<img src="${f.avatar}">` : '👤'}</div>
+                    <div class="friend-info">
+                        <div class="friend-name">${f.name}</div>
+                        <div class="friend-meta">${f.bio || ''} · ${f.friends || 0} صديق</div>
+                    </div>
+                    <div class="friend-action"><button onclick="removeFriend('${f.id}')">❌ حذف</button></div>
+                </div>`).join('');
+    }
+
+    function searchFriends() {
+        const inp = document.getElementById('friendSearchInput');
+        if (!inp) return;
+        const term = inp.value.trim().toLowerCase();
+        if (!term) { showToast('⚠️ أدخل اسمًا للبحث'); return; }
+        const found = allUsers.filter(u => u.name.toLowerCase().includes(term) && u.id !== (loggedInUser?.id || ''));
+        const r = document.getElementById('friendsResults');
+        r.innerHTML = found.length === 0
+            ? '<p style="color:var(--text-muted);text-align:center;padding:30px;">لا نتائج 😕</p>'
+            : found.map(u => {
+                const isF = friendsList.some(f => f.id === u.id);
+                return `
+                    <div class="friend-card">
+                        <div class="friend-avatar">${u.avatar ? `<img src="${u.avatar}">` : '👤'}</div>
+                        <div class="friend-info">
+                            <div class="friend-name">${u.name}</div>
+                            <div class="friend-meta">${u.bio || ''} · ${u.friends || 0} صديق</div>
+                        </div>
+                        <div class="friend-action">${isF
+                            ? '<span style="color:var(--accent);">✅ صديق</span>'
+                            : `<button onclick="addFriend('${u.id}')">➕ إضافة</button>`}
+                        </div>
+                    </div>`;
+            }).join('');
+    }
+
+    function addFriend(uid) {
+        const u = allUsers.find(x => x.id === uid);
+        if (!u) return;
+        if (friendsList.some(f => f.id === uid)) { showToast('⚠️ هذا الشخص صديقك بالفعل'); return; }
+        friendsList.push({ ...u });
+        showToast('✅ تمت الإضافة');
+        saveToStorage();
+        renderFriendsList();
+    }
+
+    function removeFriend(uid) {
+        friendsList = friendsList.filter(f => f.id !== uid);
+        showToast('🗑️ تم الحذف');
+        saveToStorage();
+        renderFriendsList();
+    }
+
+    // ==================== ADMIN PANEL ====================
+    function renderAdminPanel() {
+        document.getElementById('adminMangaCount').textContent = mangaList.length;
+        document.getElementById('adminMangaList').innerHTML = mangaList.map(m => `
+            <div class="manga-admin-item">
+                <div style="font-size:28px;">${m.cover ? `<img src="${m.cover}" style="width:40px;height:55px;object-fit:cover;border-radius:6px;">` : '📖'}</div>
+                <div style="flex:1;">
+                    <div class="mai-title">${m.title}</div>
+                    <div class="mai-info">✍️ ${m.author} · ${m.status} · ⭐ ${m.rating} · ${m.chapters.length} فصل</div>
+                </div>
+                <button class="btn-danger" onclick="adminDeleteManga(${m.id})">🗑️ حذف</button>
+            </div>`).join('');
+    }
+
+    function addChapterEntry() {
+        chapterEntryCount++;
+        const id = chapterEntryCount;
+        const div = document.createElement('div');
+        div.className = 'chapter-entry';
+        div.id = `chEntry_${id}`;
+        div.innerHTML = `
+            <input type="number" placeholder="رقم الفصل" value="${id}" style="width:100px;flex:unset">
+            <input type="text" placeholder="عنوان الفصل (عربي)">
+            <input type="number" placeholder="عدد الصفحات" value="24" style="width:110px;flex:unset">
+            <button class="btn-danger" onclick="removeChapterEntry(${id})">حذف</button>`;
+        document.getElementById('chapterBuilder').appendChild(div);
+    }
+
+    function removeChapterEntry(id) {
+        const el = document.getElementById(`chEntry_${id}`);
+        if (el && document.querySelectorAll('.chapter-entry').length > 1) el.remove();
+        else showToast('⚠️ يجب أن يكون هناك فصل واحد على الأقل');
+    }
+
+    async function adminAddManga() {
+        const title = document.getElementById('adminTitle').value.trim();
+        const author = document.getElementById('adminAuthor').value.trim();
+        const cover = document.getElementById('adminCover').value.trim();
+        const rating = parseFloat(document.getElementById('adminRating').value) || 8.0;
+        const status = document.getElementById('adminStatus').value;
+        const desc = document.getElementById('adminDesc').value.trim();
+
+        if (!title || !author || !desc) { showToast('⚠️ يرجى ملء الحقول المطلوبة (*)'); return; }
+
+        const genres = [...document.querySelectorAll('.genre-checkbox:checked')].map(g => g.value);
+        if (genres.length === 0) { showToast('⚠️ اختر تصنيفًا واحدًا على الأقل'); return; }
+
+        const chapterEntries = document.querySelectorAll('.chapter-entry');
+        const chapters = [...chapterEntries].map(entry => {
+            const inputs = entry.querySelectorAll('input');
+            return {
+                number: parseInt(inputs[0].value) || 1,
+                title: inputs[1].value.trim() || 'فصل بدون عنوان',
+                pages: parseInt(inputs[2].value) || 20
+            };
+        });
+
+        showLoading();
+        try {
+            const result = await SB.post('manga', {
+                title, author, cover, rating,
+                genres, status, views: 0,
+                description: desc, chapters
+            });
+            mangaList.push(result[0]);
+            showToast('✅ تمت إضافة العمل في Supabase!');
+        } catch (e) {
+            console.error(e);
+            showToast('❌ فشل الحفظ — تأكد من إعداد Supabase');
+        }
+        hideLoading();
+
+        // إعادة ضبط النموذج
+        document.getElementById('adminTitle').value = '';
+        document.getElementById('adminAuthor').value = '';
+        document.getElementById('adminCover').value = '';
+        document.getElementById('adminRating').value = '8.0';
+        document.getElementById('adminDesc').value = '';
+        document.querySelectorAll('.genre-checkbox').forEach(c => c.checked = false);
+        document.getElementById('chapterBuilder').innerHTML = `
+            <div class="chapter-entry" id="chEntry_1">
+                <input type="number" placeholder="رقم الفصل" value="1" style="width:100px;flex:unset">
+                <input type="text" placeholder="عنوان الفصل (عربي)">
+                <input type="number" placeholder="عدد الصفحات" value="24" style="width:110px;flex:unset">
+                <button class="btn-danger" onclick="removeChapterEntry(1)">حذف</button>
+            </div>`;
+        chapterEntryCount = 1;
+
+        renderAdminPanel();
+        renderCarousel();
+        renderMangaGrid(currentFilter, document.getElementById('searchInput')?.value || '');
+    }
+
+    async function adminDeleteManga(id) {
+        if (!confirm('هل تريد حذف هذا العمل؟ لا يمكن التراجع.')) return;
+        showLoading();
+        try {
+            await SB.delete('manga', id);
+            mangaList = mangaList.filter(m => m.id !== id);
+            showToast('🗑️ تم الحذف من Supabase');
+        } catch (e) {
+            showToast('❌ فشل الحذف');
+        }
+        hideLoading();
+        renderAdminPanel();
+        renderCarousel();
+        renderMangaGrid(currentFilter, document.getElementById('searchInput')?.value || '');
+    }
+
+    // ==================== AUTH ====================
+    function openLoginModal() { document.getElementById('loginModal').classList.add('show'); }
+    function closeLoginModal() { document.getElementById('loginModal').classList.remove('show'); }
+
+    function loginAsGuest() {
+        const n = document.getElementById('guestName').value.trim();
+        if (!n) { showToast('⚠️ أدخل اسمًا'); return; }
+        loggedInUser = { id: 'guest_' + Date.now(), name: n, avatar: '', provider: 'guest' };
+        onLoginSuccess();
+    }
+
+    function loginWithDiscord() {
+        const names = ['DragonSlayer', 'MangaKing', 'ShadowReader', 'NightOwl', 'StormBreaker'];
+        const name = 'Discord_' + names[Math.floor(Math.random() * names.length)];
+        loggedInUser = { id: 'discord_' + Date.now(), name, avatar: '', provider: 'discord' };
+        onLoginSuccess();
+        showToast('🎮 تم الدخول بديسكورد (محاكاة)');
+    }
+
+    document.getElementById('googleLoginBtn').addEventListener('click', () => {
+        const names = ['Sakura', 'Luna', 'Nova', 'Aria', 'Zara'];
+        const name = 'Google_' + names[Math.floor(Math.random() * names.length)];
+        loggedInUser = { id: 'google_' + Date.now(), name, avatar: '', provider: 'google' };
+        onLoginSuccess();
+        showToast('🔵 تم الدخول بجوجل (محاكاة)');
+    });
+
+    function onLoginSuccess() {
+        closeLoginModal();
+        updateSidebarUser();
+        saveToStorage();
+        if (currentPage === 'mylist') renderMyList();
+        if (currentPage === 'friends') renderFriendsPage();
+        if (currentPage === 'leaderboard') renderLeaderboard();
+        renderMangaGrid(currentFilter, document.getElementById('searchInput')?.value || '');
+    }
+
+    function logout() {
+        loggedInUser = null;
+        userLists = { watching: [], want: [], completed: [], dropped: [] };
+        friendsList = [];
+        updateSidebarUser();
+        saveToStorage();
+        if (currentPage === 'mylist') renderMyList();
+        if (currentPage === 'friends') renderFriendsPage();
+        renderMangaGrid(currentFilter, document.getElementById('searchInput')?.value || '');
+        showToast('👋 تم تسجيل الخروج');
+    }
+
+    // ==================== TOAST ====================
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._t);
+        t._t = setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ==================== SESSION (يوزر فقط - مش بيانات المانجا) ====================
+    function saveToStorage() {
+        // نحفظ بس بيانات اليوزر والقوائم الشخصية في localStorage
+        // المانجا بتيجي من Supabase مباشرة
+        localStorage.setItem('elhaweya_session', JSON.stringify({ loggedInUser, userLists, friendsList }));
+    }
+
+    function loadUserSession() {
+        const r = localStorage.getItem('elhaweya_session');
+        if (r) {
+            try {
+                const d = JSON.parse(r);
+                if (d.loggedInUser) loggedInUser = d.loggedInUser;
+                if (d.userLists) userLists = d.userLists;
+                if (d.friendsList) friendsList = d.friendsList;
+            } catch (e) {}
+        }
+    }
+
+    document.getElementById('loginModal').addEventListener('click', function (e) {
+        if (e.target === this) closeLoginModal();
+    });
+
+    init();
+    </script>
+</body>
+</html>
