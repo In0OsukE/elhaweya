@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الهاوية - مكتبة المانجا والمانهوا</title>
+    <title>ABYSS - مكتبة المانجا والمانهوا</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         /* نفس الـ CSS السابق بالضبط، لم يتم تغييره */
@@ -502,6 +502,7 @@
         }
         .social-btn.email { background: #4dabf7; }
         .social-btn.google { background: #fff; color: #333; border: 1px solid #ddd; }
+        .social-btn.discord { background: #5865F2; font-size: 16px; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:4px; }
         .social-btn:hover { opacity: 0.9; transform: scale(1.02); }
         .modal .close-modal {
             background: transparent; border: 1px solid var(--border);
@@ -542,7 +543,7 @@
     <!-- TOP BAR -->
     <div class="topbar">
         <button class="menu-toggle" onclick="toggleSidebar()" title="القائمة">☰</button>
-        <span class="logo">الهاوية</span>
+        <span class="logo">ABYSS</span>
         <span class="spacer"></span>
     </div>
 
@@ -552,7 +553,7 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="side-header">
-            <span class="side-logo">الهاوية</span>
+            <span class="side-logo">ABYSS</span>
             <button class="close-sidebar" onclick="closeSidebar()">✕</button>
         </div>
         <nav>
@@ -560,7 +561,7 @@
             <a data-page="mylist" onclick="goToPage('mylist')">📚 مكتبتي</a>
             <a data-page="friends" onclick="goToPage('friends')">👥 أصدقائي</a>
             <a data-page="leaderboard" onclick="goToPage('leaderboard')">📊 المتصدرون</a>
-            <a data-page="admin" onclick="goToPage('admin')">⚙️ لوحة الإدارة</a>
+            <a data-page="admin" id="adminNavLink" onclick="goToPage('admin')" style="display:none;">⚙️ لوحة الإدارة</a>
         </nav>
         <div class="user-area" id="sidebarUserArea"></div>
     </aside>
@@ -574,23 +575,16 @@
     <div class="modal-overlay" id="loginModal">
         <div class="modal">
             <h3>🔑 تسجيل الدخول</h3>
-            <div class="login-options">
-                <button class="social-btn email" onclick="showEmailLogin()">📧 تسجيل بالبريد الإلكتروني</button>
-                <button class="social-btn google" id="googleLoginBtn">🔵 تسجيل الدخول بـ جوجل (قريباً)</button>
-            </div>
-            <div class="divider">أو دخول سريع</div>
-            <input type="text" id="guestName" placeholder="اسم المستخدم">
-            <button onclick="loginAsGuest()" style="width:100%;background:var(--accent);color:#fff;border:none;padding:12px;border-radius:8px;cursor:pointer;font-size:15px;font-weight:bold;font-family:'Cairo',sans-serif;">
-                دخول كضيف
+            <button class="social-btn discord" onclick="loginWithDiscord()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="white" style="vertical-align:middle;margin-left:8px;"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                تسجيل الدخول بـ Discord
+            </button>
+            <div class="divider">أو</div>
+            <input type="text" id="guestName" placeholder="اسم المستخدم (ضيف)">
+            <button onclick="loginAsGuest()" style="width:100%;background:var(--bg-card);color:var(--text);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;font-size:15px;font-weight:bold;font-family:'Cairo',sans-serif;margin-top:6px;transition:var(--transition);" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-card)'">
+                👤 دخول كضيف
             </button>
             <button class="close-modal" onclick="closeLoginModal()">إلغاء</button>
-            <!-- نموذج البريد الإلكتروني (مخفي) -->
-            <div id="emailForm" style="display:none; margin-top:10px;">
-                <input type="email" id="emailInput" placeholder="البريد الإلكتروني">
-                <input type="password" id="passwordInput" placeholder="كلمة المرور">
-                <button onclick="signUpWithEmail()" style="width:48%;background:var(--accent-green);color:#fff;border:none;padding:10px;border-radius:8px;cursor:pointer;">إنشاء حساب</button>
-                <button onclick="signInWithEmail()" style="width:48%;background:var(--accent);color:#fff;border:none;padding:10px;border-radius:8px;cursor:pointer;">تسجيل الدخول</button>
-            </div>
         </div>
     </div>
 
@@ -598,7 +592,8 @@
     <div class="modal-overlay" id="adminPasswordModal">
         <div class="modal">
             <h3>🔐 صلاحيات المسؤول</h3>
-            <p style="margin-bottom:10px;">أدخل كلمة مرور المسؤول للوصول إلى لوحة التحكم</p>
+            <p style="margin-bottom:10px;">أدخل بيانات المسؤول للوصول إلى لوحة التحكم</p>
+            <input type="text" id="adminUsernameInput" placeholder="اسم المستخدم" style="margin-bottom:8px;">
             <input type="password" id="adminPasswordInput" placeholder="كلمة المرور">
             <button onclick="checkAdminPassword()" class="btn-primary" style="width:100%;margin:10px 0;">دخول</button>
             <button onclick="closeAdminPasswordModal()" class="close-modal">إلغاء</button>
@@ -611,8 +606,7 @@
         // ==================== إعدادات Supabase ====================
         // ⚠️ استبدل هذه القيم ببيانات مشروعك من Supabase
         const SUPABASE_URL = 'https://zquyhrshnctwilxggcyi.supabase.co';  // ← غيّر هنا
-        const SUPABASE_KEY =  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdXlocnNobmN0d2lseGdnY3lpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDU3MTUsImV4cCI6MjA5NDI4MTcxNX0.En9CcuL14vXP2LlgKLsTrg1DcJSPkEnZem7E2a-lgQI';
-		
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdXlocnNobmN0d2lseGdnY3lpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDU3MTUsImV4cCI6MjA5NDI4MTcxNX0.En9CcuL14vXP2LlgKLsTrg1DcJSPkEnZem7E2a-lgQI';               // ← غيّر هنا
         // ✅ كلمة مرور الأدمن محفوظة في Supabase بأمان (جدول settings)
 
         // ==================== دوال Supabase (REST API) ====================
@@ -661,6 +655,47 @@
         };
 
         // ==================== Supabase Auth (REST) ====================
+        // ==================== Supabase Auth - Discord OAuth ====================
+        async function loginWithDiscord() {
+            // Supabase OAuth redirect
+            const redirectUrl = window.location.href.split('#')[0].split('?')[0];
+            window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=discord&redirect_to=${encodeURIComponent(redirectUrl)}`;
+        }
+
+        // معالجة الـ callback بعد رجوع Discord
+        async function handleOAuthCallback() {
+            const hash = window.location.hash;
+            if (!hash || !hash.includes('access_token')) return false;
+            const params = new URLSearchParams(hash.substring(1));
+            const accessToken = params.get('access_token');
+            const refreshToken = params.get('refresh_token');
+            if (!accessToken) return false;
+            try {
+                // جيب بيانات المستخدم من Supabase
+                const r = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${accessToken}` }
+                });
+                if (!r.ok) return false;
+                const user = await r.json();
+                const meta = user.user_metadata || {};
+                loggedInUser = {
+                    id: user.id,
+                    name: meta.full_name || meta.name || meta.user_name || user.email?.split('@')[0] || 'مستخدم',
+                    avatar: meta.avatar_url || '',
+                    provider: 'discord'
+                };
+                authToken = accessToken;
+                // امسح الـ hash من URL بدون reload
+                history.replaceState(null, '', window.location.pathname + window.location.search);
+                onLoginSuccess();
+                showToast('✅ أهلاً ' + loggedInUser.name + ' 👋');
+                return true;
+            } catch (e) {
+                console.error('OAuth callback error:', e);
+                return false;
+            }
+        }
+
         async function signUp(email, password) {
             const r = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
                 method: 'POST',
@@ -716,7 +751,10 @@
                     if (d.authToken) authToken = d.authToken;
                     if (d.userLists) userLists = d.userLists;
                     if (d.friendsList) friendsList = d.friendsList;
-                    if (d.adminAuthenticated) adminAuthenticated = d.adminAuthenticated;
+                    if (d.adminAuthenticated) {
+                        adminAuthenticated = d.adminAuthenticated;
+                        document.getElementById('adminNavLink').style.display = '';
+                    }
                 } catch (e) {}
             }
         }
@@ -751,6 +789,37 @@
                 allUsers = await SB.get('users', 'order=read_count.desc');
             } catch (e) {
                 allUsers = [];
+            }
+        }
+
+        // ==================== إنشاء Buckets تلقائياً ====================
+        async function ensureStorageBuckets() {
+            const buckets = [
+                { id: 'covers', name: 'covers', public: true },
+                { id: 'chapters', name: 'chapters', public: true }
+            ];
+            for (const bucket of buckets) {
+                try {
+                    // تحقق أن الـ bucket موجود
+                    const r = await fetch(`${SUPABASE_URL}/storage/v1/bucket/${bucket.id}`, {
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                    });
+                    if (r.status === 404) {
+                        // أنشئه لو مش موجود
+                        await fetch(`${SUPABASE_URL}/storage/v1/bucket`, {
+                            method: 'POST',
+                            headers: {
+                                'apikey': SUPABASE_KEY,
+                                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ id: bucket.id, name: bucket.name, public: bucket.public })
+                        });
+                        console.log(`✅ Bucket "${bucket.id}" created`);
+                    }
+                } catch (e) {
+                    console.warn(`Bucket check failed for "${bucket.id}":`, e);
+                }
             }
         }
 
@@ -844,7 +913,18 @@
                             <div class="form-group"><label>اسم المؤلف *</label><input type="text" id="adminAuthor" placeholder="مثال: KIM Hyun-soo"></div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group"><label>رابط الغلاف (URL)</label><input type="text" id="adminCover" placeholder="https://example.com/cover.jpg"></div>
+                            <div class="form-group">
+                                <label>🖼️ غلاف العمل</label>
+                                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                                    <input type="file" id="adminCoverFile" accept="image/*" onchange="previewCover(this)" style="flex:1;min-width:180px;padding:8px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                                    <span style="color:var(--text-muted);font-size:13px;">أو</span>
+                                    <input type="text" id="adminCover" placeholder="رابط الغلاف (URL)" style="flex:1;min-width:180px;">
+                                </div>
+                                <div id="coverPreview" style="margin-top:10px;display:none;">
+                                    <img id="coverPreviewImg" style="width:80px;height:110px;object-fit:cover;border-radius:8px;border:2px solid var(--accent);">
+                                    <button onclick="clearCoverFile()" style="margin-right:8px;background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">✕ إزالة</button>
+                                </div>
+                            </div>
                             <div class="form-group"><label>التقييم (1-10)</label><input type="number" id="adminRating" min="1" max="10" step="0.1" value="8.0"></div>
                             <div class="form-group"><label>الحالة</label><select id="adminStatus"><option value="مستمر">مستمر</option><option value="مكتمل">مكتمل</option><option value="متوقف">متوقف</option></select></div>
                         </div>
@@ -871,7 +951,13 @@
                             <div class="chapter-entry" id="chEntry_1">
                                 <input type="number" placeholder="رقم الفصل" value="1" style="width:100px;flex:unset">
                                 <input type="text" placeholder="عنوان الفصل (عربي)">
-                                <input type="number" placeholder="عدد الصفحات" value="24" style="width:110px;flex:unset">
+                                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;">
+                                    <label style="font-size:12px;color:var(--text-muted);white-space:nowrap;">📄 صفحات الفصل:</label>
+                                    <input type="file" accept="image/*" multiple class="chapter-pages-input"
+                                        style="flex:1;min-width:150px;padding:6px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;"
+                                        onchange="updatePageCount(this, 1)">
+                                    <span id="pageCount_1" style="font-size:12px;color:var(--accent-green);white-space:nowrap;">0 صفحة</span>
+                                </div>
                                 <button class="btn-danger" onclick="removeChapterEntry(1)">حذف</button>
                             </div>
                         </div>
@@ -893,10 +979,13 @@
             updateSidebarUser();
             setupFilters();
             setupSearch();
+            // تحقق من Discord OAuth callback أولاً
+            await handleOAuthCallback();
             await loadMangaFromDB();
             renderCarousel();
             renderMangaGrid();
             await loadUsersFromDB();
+            ensureStorageBuckets(); // إنشاء الـ buckets في الخلفية
             // إعادة تحميل الصفحة الحالية إذا كانت محفوظة
             if (currentPage && currentPage !== 'home') goToPage(currentPage);
         }
@@ -950,27 +1039,23 @@
             saveToStorage();
         }
 
-        // ==================== دوال الأدمن (كلمة المرور من Supabase) ====================
-        async function checkAdminPassword() {
+        // ==================== دوال الأدمن ====================
+        function checkAdminPassword() {
+            const user = document.getElementById('adminUsernameInput').value.trim();
             const pass = document.getElementById('adminPasswordInput').value.trim();
-            if (!pass) { showToast('⚠️ أدخل كلمة المرور'); return; }
-            showLoading();
-            try {
-                // نجيب الباسورد من جدول settings في Supabase
-                const rows = await SB.get('settings', 'key=eq.admin_password&select=value');
-                hideLoading();
-                if (rows.length && rows[0].value === pass) {
-                    adminAuthenticated = true;
-                    document.getElementById('adminPasswordModal').classList.remove('show');
-                    saveToStorage();
-                    goToPage('admin');
-                    showToast('✅ أهلاً بالمسؤول');
-                } else {
-                    showToast('❌ كلمة مرور خاطئة');
-                }
-            } catch (e) {
-                hideLoading();
-                showToast('❌ تعذّر التحقق، تأكد من إعداد Supabase');
+            if (!user || !pass) { showToast('⚠️ أدخل اسم المستخدم وكلمة المرور'); return; }
+            if (user === 'alsokary' && pass === 'alsokary<3nunu') {
+                adminAuthenticated = true;
+                document.getElementById('adminPasswordModal').classList.remove('show');
+                document.getElementById('adminNavLink').style.display = '';
+                document.getElementById('adminUsernameInput').value = '';
+                document.getElementById('adminPasswordInput').value = '';
+                saveToStorage();
+                goToPage('admin');
+                showToast('✅ أهلاً يا السكري 👑');
+            } else {
+                showToast('❌ اسم المستخدم أو كلمة المرور غلط');
+                document.getElementById('adminPasswordInput').value = '';
             }
         }
         function closeAdminPasswordModal() {
@@ -1284,7 +1369,13 @@
             div.innerHTML = `
                 <input type="number" placeholder="رقم الفصل" value="${chapterEntryCount}" style="width:100px;flex:unset">
                 <input type="text" placeholder="عنوان الفصل (عربي)">
-                <input type="number" placeholder="عدد الصفحات" value="24" style="width:110px;flex:unset">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;">
+                    <label style="font-size:12px;color:var(--text-muted);white-space:nowrap;">📄 صفحات الفصل:</label>
+                    <input type="file" accept="image/*" multiple class="chapter-pages-input"
+                        style="flex:1;min-width:150px;padding:6px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;"
+                        onchange="updatePageCount(this, ${chapterEntryCount})">
+                    <span id="pageCount_${chapterEntryCount}" style="font-size:12px;color:var(--accent-green);white-space:nowrap;">0 صفحة</span>
+                </div>
                 <button class="btn-danger" onclick="removeChapterEntry(${chapterEntryCount})">حذف</button>`;
             document.getElementById('chapterBuilder').appendChild(div);
         }
@@ -1293,42 +1384,138 @@
             if (el && document.querySelectorAll('.chapter-entry').length > 1) el.remove();
             else showToast('⚠️ يجب أن يكون هناك فصل واحد على الأقل');
         }
+        // ==================== دوال مساعدة للصور ====================
+        function previewCover(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('coverPreviewImg').src = e.target.result;
+                document.getElementById('coverPreview').style.display = 'flex';
+                document.getElementById('coverPreview').style.alignItems = 'center';
+                document.getElementById('coverPreview').style.gap = '8px';
+                document.getElementById('adminCover').value = '';
+            };
+            reader.readAsDataURL(file);
+        }
+        function clearCoverFile() {
+            document.getElementById('adminCoverFile').value = '';
+            document.getElementById('coverPreview').style.display = 'none';
+            document.getElementById('coverPreviewImg').src = '';
+        }
+        function updatePageCount(input, entryId) {
+            const count = input.files.length;
+            const el = document.getElementById(`pageCount_${entryId}`);
+            if (el) el.textContent = count + ' صفحة';
+        }
+
+        // تحويل صورة لـ base64
+        function fileToBase64(file) {
+            return new Promise((res, rej) => {
+                const r = new FileReader();
+                r.onload = () => res(r.result.split(',')[1]);
+                r.onerror = rej;
+                r.readAsDataURL(file);
+            });
+        }
+
+        // رفع صورة لـ Supabase Storage
+        async function uploadImageToSupabase(file, bucket, path) {
+            const base64 = await fileToBase64(file);
+            const binaryStr = atob(base64);
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
+            const r = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': file.type,
+                    'x-upsert': 'true'
+                },
+                body: bytes
+            });
+            if (!r.ok) throw await r.json();
+            return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+        }
+
         async function adminAddManga() {
             const title = document.getElementById('adminTitle').value.trim();
             const author = document.getElementById('adminAuthor').value.trim();
-            const cover = document.getElementById('adminCover').value.trim();
             const rating = parseFloat(document.getElementById('adminRating').value) || 8.0;
             const status = document.getElementById('adminStatus').value;
             const desc = document.getElementById('adminDesc').value.trim();
             if (!title || !author || !desc) { showToast('⚠️ املأ الحقول المطلوبة'); return; }
             const genres = [...document.querySelectorAll('.genre-checkbox:checked')].map(g => g.value);
             if (!genres.length) { showToast('⚠️ اختر تصنيفًا على الأقل'); return; }
-            const chapters = [...document.querySelectorAll('.chapter-entry')].map(entry => {
-                const inputs = entry.querySelectorAll('input');
-                return {
-                    number: parseInt(inputs[0].value) || 1,
-                    title: inputs[1].value.trim() || 'فصل بدون عنوان',
-                    pages: parseInt(inputs[2].value) || 20
-                };
-            });
+
             showLoading();
+            showToast('⏳ جاري رفع الملفات...');
+
             try {
+                // ---- رفع الغلاف ----
+                let coverUrl = document.getElementById('adminCover').value.trim();
+                const coverFile = document.getElementById('adminCoverFile').files[0];
+                if (coverFile) {
+                    const safeName = title.replace(/\s+/g, '_').replace(/[^\w\u0600-\u06FF]/g, '');
+                    coverUrl = await uploadImageToSupabase(coverFile, 'covers', `${safeName}_${Date.now()}.${coverFile.name.split('.').pop()}`);
+                    showToast('✅ تم رفع الغلاف');
+                }
+
+                // ---- رفع صفحات الفصول ----
+                const chapterEntries = [...document.querySelectorAll('.chapter-entry')];
+                const chapters = [];
+                for (let i = 0; i < chapterEntries.length; i++) {
+                    const entry = chapterEntries[i];
+                    const inputs = entry.querySelectorAll('input[type="number"], input[type="text"]');
+                    const chNum = parseInt(inputs[0].value) || (i + 1);
+                    const chTitle = inputs[1]?.value.trim() || `فصل ${chNum}`;
+                    const pagesInput = entry.querySelector('.chapter-pages-input');
+                    const pageFiles = pagesInput ? [...pagesInput.files] : [];
+                    const pageUrls = [];
+
+                    if (pageFiles.length > 0) {
+                        showToast(`⏳ رفع فصل ${chNum} (${pageFiles.length} صفحة)...`);
+                        const safeName = title.replace(/\s+/g, '_').replace(/[^\w\u0600-\u06FF]/g, '');
+                        for (let j = 0; j < pageFiles.length; j++) {
+                            const pageUrl = await uploadImageToSupabase(
+                                pageFiles[j],
+                                'chapters',
+                                `${safeName}/ch${chNum}/page_${String(j+1).padStart(3,'0')}.${pageFiles[j].name.split('.').pop()}`
+                            );
+                            pageUrls.push(pageUrl);
+                        }
+                    }
+
+                    chapters.push({ number: chNum, title: chTitle, pages: pageFiles.length || 0, pageUrls });
+                }
+
+                // ---- حفظ في Supabase ----
                 const result = await SB.post('manga', {
-                    title, author, cover, rating,
+                    title, author, cover: coverUrl, rating,
                     genres, status, views: 0,
                     description: desc, chapters
                 });
                 mangaList.push(result[0]);
-                showToast('✅ تمت إضافة العمل إلى Supabase');
+                showToast('✅ تمت إضافة العمل بنجاح!');
+
                 // إعادة تعيين النموذج
                 ['adminTitle','adminAuthor','adminCover','adminDesc'].forEach(id => document.getElementById(id).value = '');
                 document.getElementById('adminRating').value = '8.0';
+                document.getElementById('adminCoverFile').value = '';
+                document.getElementById('coverPreview').style.display = 'none';
                 document.querySelectorAll('.genre-checkbox').forEach(c => c.checked = false);
                 document.getElementById('chapterBuilder').innerHTML = `
                     <div class="chapter-entry" id="chEntry_1">
                         <input type="number" placeholder="رقم الفصل" value="1" style="width:100px;flex:unset">
                         <input type="text" placeholder="عنوان الفصل (عربي)">
-                        <input type="number" placeholder="عدد الصفحات" value="24" style="width:110px;flex:unset">
+                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;">
+                            <label style="font-size:12px;color:var(--text-muted);white-space:nowrap;">📄 صفحات الفصل:</label>
+                            <input type="file" accept="image/*" multiple class="chapter-pages-input"
+                                style="flex:1;min-width:150px;padding:6px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;"
+                                onchange="updatePageCount(this, 1)">
+                            <span id="pageCount_1" style="font-size:12px;color:var(--accent-green);white-space:nowrap;">0 صفحة</span>
+                        </div>
                         <button class="btn-danger" onclick="removeChapterEntry(1)">حذف</button>
                     </div>`;
                 chapterEntryCount = 1;
@@ -1337,7 +1524,7 @@
                 renderMangaGrid(currentFilter);
             } catch (e) {
                 console.error(e);
-                showToast('❌ فشل الحفظ - تأكد من إعداد Supabase');
+                showToast('❌ فشل الحفظ - تأكد من إعداد Supabase Storage');
             }
             hideLoading();
         }
@@ -1360,35 +1547,6 @@
         // ==================== المصادقة ====================
         function openLoginModal() { document.getElementById('loginModal').classList.add('show'); }
         function closeLoginModal() { document.getElementById('loginModal').classList.remove('show'); }
-        function showEmailLogin() {
-            document.getElementById('emailForm').style.display = 'block';
-        }
-        async function signUpWithEmail() {
-            const email = document.getElementById('emailInput').value;
-            const password = document.getElementById('passwordInput').value;
-            try {
-                const data = await signUp(email, password);
-                loggedInUser = { id: data.user.id, name: email.split('@')[0], avatar: '', provider: 'email' };
-                authToken = data.access_token;
-                onLoginSuccess();
-                showToast('✅ تم إنشاء الحساب بنجاح');
-            } catch (e) {
-                showToast('❌ ' + (e.msg || e.message));
-            }
-        }
-        async function signInWithEmail() {
-            const email = document.getElementById('emailInput').value;
-            const password = document.getElementById('passwordInput').value;
-            try {
-                const data = await signIn(email, password);
-                loggedInUser = { id: data.user.id, name: email.split('@')[0], avatar: '', provider: 'email' };
-                authToken = data.access_token;
-                onLoginSuccess();
-                showToast('✅ تم تسجيل الدخول');
-            } catch (e) {
-                showToast('❌ ' + (e.msg || e.message));
-            }
-        }
         function loginAsGuest() {
             const name = document.getElementById('guestName').value.trim();
             if (!name) { showToast('⚠️ أدخل اسمًا'); return; }
@@ -1412,6 +1570,7 @@
             userLists = { watching: [], want: [], completed: [], dropped: [] };
             friendsList = [];
             adminAuthenticated = false;
+            document.getElementById('adminNavLink').style.display = 'none';
             updateSidebarUser();
             saveToStorage();
             if (currentPage === 'admin') goToPage('home');
