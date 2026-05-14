@@ -588,6 +588,33 @@
         </div>
     </div>
 
+    <!-- مودال إضافة فصل لمنجا موجودة -->
+    <div class="modal-overlay" id="addChapterModal">
+        <div class="modal" style="max-width:480px;width:95%;">
+            <h3>➕ إضافة فصل جديد</h3>
+            <p id="addChapterMangaName" style="color:var(--accent);font-weight:bold;margin-bottom:14px;"></p>
+            <div style="display:flex;gap:10px;margin-bottom:10px;">
+                <div style="flex:1;">
+                    <label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">رقم الفصل</label>
+                    <input type="number" id="newChapterNum" min="1" value="1" style="width:100%;box-sizing:border-box;">
+                </div>
+                <div style="flex:2;">
+                    <label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">عنوان الفصل</label>
+                    <input type="text" id="newChapterTitle" placeholder="مثال: البداية" style="width:100%;box-sizing:border-box;">
+                </div>
+            </div>
+            <label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">📄 صفحات الفصل (صور)</label>
+            <input type="file" id="newChapterPages" accept="image/*" multiple
+                style="width:100%;box-sizing:border-box;padding:10px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;margin-bottom:6px;"
+                onchange="document.getElementById('newChapterPageCount').textContent = this.files.length + ' صفحة'">
+            <div id="newChapterPageCount" style="font-size:13px;color:var(--accent-green);margin-bottom:14px;">0 صفحة</div>
+            <div style="display:flex;gap:10px;">
+                <button onclick="submitNewChapter()" class="btn-primary" style="flex:1;">💾 رفع الفصل</button>
+                <button onclick="document.getElementById('addChapterModal').classList.remove('show')" class="close-modal" style="flex:1;margin:0;">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <!-- مودال كلمة مرور الأدمن -->
     <div class="modal-overlay" id="adminPasswordModal">
         <div class="modal">
@@ -794,32 +821,20 @@
 
         // ==================== إنشاء Buckets تلقائياً ====================
         async function ensureStorageBuckets() {
-            const buckets = [
-                { id: 'covers', name: 'covers', public: true },
-                { id: 'chapters', name: 'chapters', public: true }
-            ];
-            for (const bucket of buckets) {
+            for (const id of ['covers', 'chapters']) {
                 try {
-                    // تحقق أن الـ bucket موجود
-                    const r = await fetch(`${SUPABASE_URL}/storage/v1/bucket/${bucket.id}`, {
+                    const check = await fetch(`${SUPABASE_URL}/storage/v1/bucket/${id}`, {
                         headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
                     });
-                    if (r.status === 404) {
-                        // أنشئه لو مش موجود
+                    if (check.status === 404) {
                         await fetch(`${SUPABASE_URL}/storage/v1/bucket`, {
                             method: 'POST',
-                            headers: {
-                                'apikey': SUPABASE_KEY,
-                                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ id: bucket.id, name: bucket.name, public: bucket.public })
+                            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id, name: id, public: true })
                         });
-                        console.log(`✅ Bucket "${bucket.id}" created`);
                     }
-                } catch (e) {
-                    console.warn(`Bucket check failed for "${bucket.id}":`, e);
-                }
+                    // لو 200 أو أي حاجة تانية — الـ bucket موجود، مش محتاج نعمل حاجة
+                } catch (e) { /* تجاهل */ }
             }
         }
 
@@ -862,8 +877,10 @@
                         <div class="details-info">
                             <div class="manga-title" id="detailsTitle"></div>
                             <div class="manga-author" id="detailsAuthor"></div>
-                            <div class="rating-large" id="detailsRating"></div>
-                            <div class="views-count" id="detailsViews"></div>
+                            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                                <div class="rating-large" id="detailsRating"></div>
+                                <div class="views-count" id="detailsViews"></div>
+                            </div>
                             <div class="genres" id="detailsGenres"></div>
                             <div class="desc" id="detailsDesc"></div>
                             <div class="action-buttons" id="detailsActionButtons"></div>
@@ -875,7 +892,12 @@
                         </div>
                     </div>
                     <div class="chapter-list">
-                        <div class="ch-header">📑 قائمة الفصول</div>
+                        <div class="ch-header" style="display:flex;align-items:center;justify-content:space-between;">
+                            <span>📑 قائمة الفصول</span>
+                            <span id="adminAddChapterBtn" style="display:none;">
+                                <button onclick="openAddChapterModal()" style="background:var(--accent);color:#fff;border:none;padding:7px 18px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;font-weight:bold;">➕ إضافة فصل</button>
+                            </span>
+                        </div>
                         <div id="chapterList"></div>
                     </div>
                 </section>
@@ -1215,9 +1237,11 @@
             document.getElementById('detailsViews').textContent = '👁️ ' + formatViews(m.views) + ' مشاهدة';
             document.getElementById('detailsGenres').innerHTML = m.genres.map(g => `<span class="genre-tag">${g}</span>`).join('');
             document.getElementById('detailsDesc').textContent = m.description;
+            // زرار إضافة فصل للأدمن بس
+            document.getElementById('adminAddChapterBtn').style.display = adminAuthenticated ? 'inline' : 'none';
             const st = getMangaListStatuses(m.id);
             document.getElementById('detailsActionButtons').innerHTML = `
-                <button class="action-btn${st.watching ? ' watching-active' : ''}" onclick="toggleList(${m.id},'watching');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">📖 ${st.watching ? '✅ تشاهدها' : 'أشاهدها حاليًا'}</button>
+                <button class="action-btn${st.watching ? ' watching-active' : ''}" onclick="toggleList(${m.id},'watching');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">📖 ${st.watching ? '✅ أشاهدها' : 'أشاهدها حاليًا'}</button>
                 <button class="action-btn${st.want ? ' active-action' : ''}" onclick="toggleList(${m.id},'want');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">💖 ${st.want ? '✅ مرغوبة' : 'أرغب بمشاهدتها'}</button>
                 <button class="action-btn${st.completed ? ' completed-active' : ''}" onclick="toggleList(${m.id},'completed');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">✅ ${st.completed ? '✅ مكتملة' : 'أتممت مشاهدتها'}</button>
                 <button class="action-btn${st.dropped ? ' active-action' : ''}" onclick="toggleList(${m.id},'dropped');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">🚫 ${st.dropped ? '✅ مهملة' : 'لا أرغب بها'}</button>`;
@@ -1228,20 +1252,93 @@
             updateNavButtons(m);
         }
         function renderChapterList(m) {
-            document.getElementById('chapterList').innerHTML = m.chapters
-                .slice().sort((a,b) => a.number - b.number)
-                .map((ch, i) => `
-                <div class="ch-item${i === currentChapterIndex ? ' active-ch' : ''}" onclick="selectChapter(${m.chapters.indexOf(ch)})">
-                    <span>📄 فصل ${ch.number}: ${ch.title}</span>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                        <span style="color:var(--text-muted);font-size:12px;">${ch.pages} صفحة</span>
-                        ${ch.pageUrls && ch.pageUrls.length > 0
-                            ? `<button onclick="event.stopPropagation();openReader(${m.id},${m.chapters.indexOf(ch)})"
-                                style="background:var(--accent);color:#fff;border:none;padding:5px 14px;border-radius:6px;cursor:pointer;font-family:Cairo,sans-serif;font-size:12px;">قراءة</button>`
-                            : `<span style="color:var(--text-muted);font-size:11px;">لا توجد صفحات</span>`
-                        }
-                    </div>
-                </div>`).join('');
+            const sorted = m.chapters.slice().sort((a, b) => a.number - b.number);
+            document.getElementById('chapterList').innerHTML = sorted.length === 0
+                ? '<div style="text-align:center;padding:30px;color:var(--text-muted);">لا توجد فصول بعد</div>'
+                : sorted.map(ch => {
+                    const idx = m.chapters.indexOf(ch);
+                    const hasPages = ch.pageUrls && ch.pageUrls.length > 0;
+                    return `
+                    <div class="ch-item${idx === currentChapterIndex ? ' active-ch' : ''}"
+                         onclick="selectChapter(${idx})"
+                         style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-radius:10px;margin-bottom:6px;cursor:pointer;background:var(--bg-card);border:1px solid ${idx === currentChapterIndex ? 'var(--accent)' : 'var(--border)'};transition:var(--transition);">
+                        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+                            <span style="font-size:20px;">${hasPages ? '📖' : '📄'}</span>
+                            <div>
+                                <div style="font-weight:bold;font-size:14px;">فصل ${ch.number}: ${ch.title}</div>
+                                <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${ch.pages || 0} صفحة${hasPages ? ' • جاهز للقراءة' : ' • لا توجد صفحات'}</div>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+                            ${hasPages
+                                ? `<button onclick="event.stopPropagation();openReader(${m.id},${idx})"
+                                    style="background:var(--accent);color:#fff;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;font-weight:bold;white-space:nowrap;">
+                                    قراءة ▶
+                                   </button>`
+                                : `<span style="font-size:12px;color:var(--text-muted);padding:8px 10px;border:1px solid var(--border);border-radius:8px;">قريباً</span>`
+                            }
+                        </div>
+                    </div>`;
+                }).join('');
+        }
+
+        // ==================== إضافة فصل لمنجا موجودة ====================
+        let addChapterTargetId = null;
+
+        function openAddChapterModal() {
+            const m = mangaList.find(x => x.id === currentMangaId);
+            if (!m) { showToast('⚠️ افتح صفحة المنجا أولاً'); return; }
+            addChapterTargetId = m.id;
+            document.getElementById('addChapterMangaName').textContent = '📚 ' + m.title;
+            const maxNum = m.chapters.length ? Math.max(...m.chapters.map(c => c.number)) : 0;
+            document.getElementById('newChapterNum').value = maxNum + 1;
+            document.getElementById('newChapterTitle').value = '';
+            document.getElementById('newChapterPages').value = '';
+            document.getElementById('newChapterPageCount').textContent = '0 صفحة';
+            document.getElementById('addChapterModal').classList.add('show');
+        }
+
+        async function submitNewChapter() {
+            const m = mangaList.find(x => x.id === addChapterTargetId);
+            if (!m) return;
+            const chNum   = parseInt(document.getElementById('newChapterNum').value) || 1;
+            const chTitle = document.getElementById('newChapterTitle').value.trim() || `فصل ${chNum}`;
+            const filesInput = document.getElementById('newChapterPages');
+            const pageFiles  = [...filesInput.files].sort((a, b) => {
+                return (parseInt(a.name.match(/\d+/)?.[0] ?? '0')) - (parseInt(b.name.match(/\d+/)?.[0] ?? '0'));
+            });
+            if (pageFiles.length === 0) { showToast('⚠️ اختر صفحات الفصل'); return; }
+
+            document.getElementById('addChapterModal').classList.remove('show');
+            showLoading();
+            showToast(`⏳ رفع فصل ${chNum} — ${pageFiles.length} صفحة...`);
+
+            try {
+                const pageUrls = [];
+                const folderKey = `ch${String(chNum).padStart(3,'0')}_${Date.now()}`;
+                for (let j = 0; j < pageFiles.length; j++) {
+                    const ext = pageFiles[j].name.split('.').pop().toLowerCase();
+                    const url = await uploadImageToSupabase(
+                        pageFiles[j], 'chapters',
+                        `${folderKey}/page_${String(j+1).padStart(3,'0')}.${ext}`
+                    );
+                    pageUrls.push(url);
+                    if ((j+1) % 5 === 0) showToast(`📤 ${j+1}/${pageFiles.length} صفحة...`);
+                }
+
+                const newChapter = { number: chNum, title: chTitle, pages: pageFiles.length, pageUrls };
+                m.chapters.push(newChapter);
+                m.chapters.sort((a, b) => a.number - b.number);
+
+                // حفظ في Supabase
+                await SB.patch('manga', m.id, { chapters: m.chapters });
+
+                showToast(`✅ تم رفع فصل ${chNum} بنجاح!`);
+                renderMangaDetails(m);
+            } catch (e) {
+                showToast('❌ ' + (e.message || 'فشل الرفع').slice(0, 80));
+            }
+            hideLoading();
         }
 
         // ==================== عارض الفصول ====================
@@ -1522,7 +1619,15 @@
 
         // رفع صورة لـ Supabase Storage مباشرة
         async function uploadImageToSupabase(file, bucket, path) {
-            const r = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
+            // تنظيف المسار من أي حرف غير مقبول في Supabase
+            const cleanPath = path
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')   // diacritics
+                .replace(/[\u0600-\u06FF]/g, '')    // Arabic letters
+                .replace(/[^a-zA-Z0-9/_.\-]/g, '')  // everything else except safe chars
+                .replace(/\/+/g, '/')               // double slashes
+                .replace(/^\//, '');                // leading slash
+            const r = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${cleanPath}`, {
                 method: 'POST',
                 headers: {
                     'apikey': SUPABASE_KEY,
@@ -1536,7 +1641,7 @@
                 const err = await r.json().catch(() => ({}));
                 throw new Error(err.message || `Upload failed: ${r.status}`);
             }
-            return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+            return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${cleanPath}`;
         }
 
         async function adminAddManga() {
@@ -1564,10 +1669,10 @@
                 let coverUrl = document.getElementById('adminCover')?.value.trim() || '';
                 const coverFile = document.getElementById('adminCoverFile')?.files[0];
                 if (coverFile) {
-                    const safeName = title.replace(/\s+/g,'_').replace(/[^\w\u0600-\u06FF]/g,'');
+                    const ext = coverFile.name.split('.').pop().toLowerCase();
                     coverUrl = await uploadImageToSupabase(
                         coverFile, 'covers',
-                        `${safeName}_${Date.now()}.${coverFile.name.split('.').pop()}`
+                        `cover_${Date.now()}.${ext}`
                     );
                     showToast('✅ تم رفع الغلاف');
                 }
@@ -1592,15 +1697,14 @@
                     const pageUrls = [];
                     if (pageFiles.length > 0) {
                         showToast(`⏳ رفع فصل ${chNum} — ${pageFiles.length} صفحة...`);
-                        const safeName = title.replace(/\s+/g,'_').replace(/[^\w\u0600-\u06FF]/g,'');
+                        const folderKey = `ch${String(chNum).padStart(3,'0')}_${Date.now()}`;
                         for (let j = 0; j < pageFiles.length; j++) {
-                            const ext = pageFiles[j].name.split('.').pop();
+                            const ext = pageFiles[j].name.split('.').pop().toLowerCase();
                             const url = await uploadImageToSupabase(
                                 pageFiles[j], 'chapters',
-                                `${safeName}/ch${String(chNum).padStart(3,'0')}/page_${String(j+1).padStart(3,'0')}.${ext}`
+                                `${folderKey}/page_${String(j+1).padStart(3,'0')}.${ext}`
                             );
                             pageUrls.push(url);
-                            // بروجرس كل 5 صفحات
                             if ((j+1) % 5 === 0) showToast(`📤 ${j+1}/${pageFiles.length} صفحة...`);
                         }
                     }
