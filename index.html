@@ -1390,8 +1390,8 @@
             if (!u || !p) { showToast('⚠️ أدخل اسم المستخدم وكلمة المرور'); return; }
             // التحقق عبر hash بسيط
             const _h = s => [...s].reduce((a,c)=>Math.imul(31,a)+c.charCodeAt(0)|0,0)>>>0;
-            const validU = 2013175396;  // hash of username
-            const validP = 761560361;   // hash of password
+            const validU = 92668751;   // hash of: admin
+            const validP = 3181154776; // hash of: abyss2024
             if (_h(u) === validU && _h(p) === validP) {
                 adminAuthenticated = true;
                 document.getElementById('adminPasswordModal').classList.remove('show');
