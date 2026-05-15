@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الهاوية - مكتبة المانجا والمانهوا</title>
+    <title>ABYSS - مكتبة المانجا والمانهوا</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         /* نفس الـ CSS السابق بالضبط، لم يتم تغييره */
@@ -502,6 +502,7 @@
         }
         .social-btn.email { background: #4dabf7; }
         .social-btn.google { background: #fff; color: #333; border: 1px solid #ddd; }
+        .social-btn.discord { background: #5865F2; font-size: 16px; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:4px; }
         .social-btn:hover { opacity: 0.9; transform: scale(1.02); }
         .modal .close-modal {
             background: transparent; border: 1px solid var(--border);
@@ -542,7 +543,7 @@
     <!-- TOP BAR -->
     <div class="topbar">
         <button class="menu-toggle" onclick="toggleSidebar()" title="القائمة">☰</button>
-        <span class="logo">الهاوية</span>
+        <span class="logo">ABYSS</span>
         <span class="spacer"></span>
     </div>
 
@@ -552,7 +553,7 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="side-header">
-            <span class="side-logo">الهاوية</span>
+            <span class="side-logo">ABYSS</span>
             <button class="close-sidebar" onclick="closeSidebar()">✕</button>
         </div>
         <nav>
@@ -560,7 +561,7 @@
             <a data-page="mylist" onclick="goToPage('mylist')">📚 مكتبتي</a>
             <a data-page="friends" onclick="goToPage('friends')">👥 أصدقائي</a>
             <a data-page="leaderboard" onclick="goToPage('leaderboard')">📊 المتصدرون</a>
-            <a data-page="admin" onclick="goToPage('admin')">⚙️ لوحة الإدارة</a>
+            <a data-page="admin" id="adminNavLink" onclick="goToPage('admin')" style="display:none;">⚙️ لوحة الإدارة</a>
         </nav>
         <div class="user-area" id="sidebarUserArea"></div>
     </aside>
@@ -574,22 +575,42 @@
     <div class="modal-overlay" id="loginModal">
         <div class="modal">
             <h3>🔑 تسجيل الدخول</h3>
-            <div class="login-options">
-                <button class="social-btn email" onclick="showEmailLogin()">📧 تسجيل بالبريد الإلكتروني</button>
-                <button class="social-btn google" id="googleLoginBtn">🔵 تسجيل الدخول بـ جوجل (قريباً)</button>
-            </div>
-            <div class="divider">أو دخول سريع</div>
-            <input type="text" id="guestName" placeholder="اسم المستخدم">
-            <button onclick="loginAsGuest()" style="width:100%;background:var(--accent);color:#fff;border:none;padding:12px;border-radius:8px;cursor:pointer;font-size:15px;font-weight:bold;font-family:'Cairo',sans-serif;">
-                دخول كضيف
+            <button class="social-btn discord" onclick="loginWithDiscord()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="white" style="vertical-align:middle;margin-left:8px;"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                تسجيل الدخول بـ Discord
+            </button>
+            <div class="divider">أو</div>
+            <input type="text" id="guestName" placeholder="اسم المستخدم (ضيف)">
+            <button onclick="loginAsGuest()" style="width:100%;background:var(--bg-card);color:var(--text);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;font-size:15px;font-weight:bold;font-family:'Cairo',sans-serif;margin-top:6px;transition:var(--transition);" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-card)'">
+                👤 دخول كضيف
             </button>
             <button class="close-modal" onclick="closeLoginModal()">إلغاء</button>
-            <!-- نموذج البريد الإلكتروني (مخفي) -->
-            <div id="emailForm" style="display:none; margin-top:10px;">
-                <input type="email" id="emailInput" placeholder="البريد الإلكتروني">
-                <input type="password" id="passwordInput" placeholder="كلمة المرور">
-                <button onclick="signUpWithEmail()" style="width:48%;background:var(--accent-green);color:#fff;border:none;padding:10px;border-radius:8px;cursor:pointer;">إنشاء حساب</button>
-                <button onclick="signInWithEmail()" style="width:48%;background:var(--accent);color:#fff;border:none;padding:10px;border-radius:8px;cursor:pointer;">تسجيل الدخول</button>
+        </div>
+    </div>
+
+    <!-- مودال إضافة فصل لمنجا موجودة -->
+    <div class="modal-overlay" id="addChapterModal">
+        <div class="modal" style="max-width:480px;width:95%;">
+            <h3>➕ إضافة فصل جديد</h3>
+            <p id="addChapterMangaName" style="color:var(--accent);font-weight:bold;margin-bottom:14px;"></p>
+            <div style="display:flex;gap:10px;margin-bottom:10px;">
+                <div style="flex:1;">
+                    <label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">رقم الفصل</label>
+                    <input type="number" id="newChapterNum" min="1" value="1" style="width:100%;box-sizing:border-box;">
+                </div>
+                <div style="flex:2;">
+                    <label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">عنوان الفصل</label>
+                    <input type="text" id="newChapterTitle" placeholder="مثال: البداية" style="width:100%;box-sizing:border-box;">
+                </div>
+            </div>
+            <label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">📄 صفحات الفصل (صور)</label>
+            <input type="file" id="newChapterPages" accept="image/*" multiple
+                style="width:100%;box-sizing:border-box;padding:10px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;margin-bottom:6px;"
+                onchange="document.getElementById('newChapterPageCount').textContent = this.files.length + ' صفحة'">
+            <div id="newChapterPageCount" style="font-size:13px;color:var(--accent-green);margin-bottom:14px;">0 صفحة</div>
+            <div style="display:flex;gap:10px;">
+                <button onclick="submitNewChapter()" class="btn-primary" style="flex:1;">💾 رفع الفصل</button>
+                <button onclick="document.getElementById('addChapterModal').classList.remove('show')" class="close-modal" style="flex:1;margin:0;">إلغاء</button>
             </div>
         </div>
     </div>
@@ -598,7 +619,8 @@
     <div class="modal-overlay" id="adminPasswordModal">
         <div class="modal">
             <h3>🔐 صلاحيات المسؤول</h3>
-            <p style="margin-bottom:10px;">أدخل كلمة مرور المسؤول للوصول إلى لوحة التحكم</p>
+            <p style="margin-bottom:10px;">أدخل بيانات المسؤول للوصول إلى لوحة التحكم</p>
+            <input type="text" id="adminUsernameInput" placeholder="اسم المستخدم" style="margin-bottom:8px;">
             <input type="password" id="adminPasswordInput" placeholder="كلمة المرور">
             <button onclick="checkAdminPassword()" class="btn-primary" style="width:100%;margin:10px 0;">دخول</button>
             <button onclick="closeAdminPasswordModal()" class="close-modal">إلغاء</button>
@@ -609,13 +631,10 @@
 
     <script>
         // ==================== إعدادات Supabase ====================
-          // ==================== إعدادات Supabase ====================
         // ⚠️ استبدل هذه القيم ببيانات مشروعك من Supabase
         const SUPABASE_URL = 'https://zquyhrshnctwilxggcyi.supabase.co';  // ← غيّر هنا
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdXlocnNobmN0d2lseGdnY3lpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDU3MTUsImV4cCI6MjA5NDI4MTcxNX0.En9CcuL14vXP2LlgKLsTrg1DcJSPkEnZem7E2a-lgQI';               // ← غيّر هنا
         // ✅ كلمة مرور الأدمن محفوظة في Supabase بأمان (جدول settings)
-
-        const ADMIN_PASSWORD = 'alsokary<3nunu';                // كلمة مرور المسؤول
 
         // ==================== دوال Supabase (REST API) ====================
         const SB = {
@@ -663,6 +682,47 @@
         };
 
         // ==================== Supabase Auth (REST) ====================
+        // ==================== Supabase Auth - Discord OAuth ====================
+        async function loginWithDiscord() {
+            // Supabase OAuth redirect
+            const redirectUrl = window.location.href.split('#')[0].split('?')[0];
+            window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=discord&redirect_to=${encodeURIComponent(redirectUrl)}`;
+        }
+
+        // معالجة الـ callback بعد رجوع Discord
+        async function handleOAuthCallback() {
+            const hash = window.location.hash;
+            if (!hash || !hash.includes('access_token')) return false;
+            const params = new URLSearchParams(hash.substring(1));
+            const accessToken = params.get('access_token');
+            const refreshToken = params.get('refresh_token');
+            if (!accessToken) return false;
+            try {
+                // جيب بيانات المستخدم من Supabase
+                const r = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${accessToken}` }
+                });
+                if (!r.ok) return false;
+                const user = await r.json();
+                const meta = user.user_metadata || {};
+                loggedInUser = {
+                    id: user.id,
+                    name: meta.full_name || meta.name || meta.user_name || user.email?.split('@')[0] || 'مستخدم',
+                    avatar: meta.avatar_url || '',
+                    provider: 'discord'
+                };
+                authToken = accessToken;
+                // امسح الـ hash من URL بدون reload
+                history.replaceState(null, '', window.location.pathname + window.location.search);
+                onLoginSuccess();
+                showToast('✅ أهلاً ' + loggedInUser.name + ' 👋');
+                return true;
+            } catch (e) {
+                console.error('OAuth callback error:', e);
+                return false;
+            }
+        }
+
         async function signUp(email, password) {
             const r = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
                 method: 'POST',
@@ -718,7 +778,10 @@
                     if (d.authToken) authToken = d.authToken;
                     if (d.userLists) userLists = d.userLists;
                     if (d.friendsList) friendsList = d.friendsList;
-                    if (d.adminAuthenticated) adminAuthenticated = d.adminAuthenticated;
+                    if (d.adminAuthenticated) {
+                        adminAuthenticated = d.adminAuthenticated;
+                        document.getElementById('adminNavLink').style.display = '';
+                    }
                 } catch (e) {}
             }
         }
@@ -756,6 +819,25 @@
             }
         }
 
+        // ==================== إنشاء Buckets تلقائياً ====================
+        async function ensureStorageBuckets() {
+            for (const id of ['covers', 'chapters']) {
+                try {
+                    const check = await fetch(`${SUPABASE_URL}/storage/v1/bucket/${id}`, {
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                    });
+                    if (check.status === 404) {
+                        await fetch(`${SUPABASE_URL}/storage/v1/bucket`, {
+                            method: 'POST',
+                            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id, name: id, public: true })
+                        });
+                    }
+                    // لو 200 أو أي حاجة تانية — الـ bucket موجود، مش محتاج نعمل حاجة
+                } catch (e) { /* تجاهل */ }
+            }
+        }
+
         // ==================== بناء واجهة الصفحات ====================
         function buildPages() {
             const main = document.getElementById('mainContent');
@@ -764,8 +846,8 @@
                     <div class="carousel-section">
                         <div class="section-title">🔥 الأعلى مشاهدةً</div>
                         <div class="carousel-container" id="carouselContainer">
-                            <button class="carousel-btn prev" onclick="moveCarousel(-1)">◀</button>
-                            <button class="carousel-btn next" onclick="moveCarousel(1)">▶</button>
+                            <button class="carousel-btn prev" onclick="moveCarousel(-1)">▶</button>
+                            <button class="carousel-btn next" onclick="moveCarousel(1)">◀</button>
                             <div class="carousel-track" id="carouselTrack"></div>
                         </div>
                         <div class="carousel-dots" id="carouselDots"></div>
@@ -795,8 +877,10 @@
                         <div class="details-info">
                             <div class="manga-title" id="detailsTitle"></div>
                             <div class="manga-author" id="detailsAuthor"></div>
-                            <div class="rating-large" id="detailsRating"></div>
-                            <div class="views-count" id="detailsViews"></div>
+                            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                                <div class="rating-large" id="detailsRating"></div>
+                                <div class="views-count" id="detailsViews"></div>
+                            </div>
                             <div class="genres" id="detailsGenres"></div>
                             <div class="desc" id="detailsDesc"></div>
                             <div class="action-buttons" id="detailsActionButtons"></div>
@@ -808,8 +892,28 @@
                         </div>
                     </div>
                     <div class="chapter-list">
-                        <div class="ch-header">📑 قائمة الفصول</div>
+                        <div class="ch-header" style="display:flex;align-items:center;justify-content:space-between;">
+                            <span>📑 قائمة الفصول</span>
+                            <span id="adminAddChapterBtn" style="display:none;">
+                                <button onclick="openAddChapterModal()" style="background:var(--accent);color:#fff;border:none;padding:7px 18px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;font-weight:bold;">➕ إضافة فصل</button>
+                            </span>
+                        </div>
                         <div id="chapterList"></div>
+                    </div>
+                </section>
+
+                <!-- ======= عارض الفصول ======= -->
+                <section class="page" id="page-reader">
+                    <div style="position:sticky;top:0;z-index:50;background:var(--bg-dark);padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-wrap:wrap;">
+                        <button onclick="closeReader()" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;">⬅️ رجوع</button>
+                        <span id="readerTitle" style="font-weight:bold;font-size:14px;flex:1;text-align:center;"></span>
+                        <button id="readerPrevBtn" onclick="readerNavChapter(-1)" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;">◀ السابق</button>
+                        <button id="readerNextBtn" onclick="readerNavChapter(1)"  style="background:var(--accent);border:none;color:#fff;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;">التالي ▶</button>
+                    </div>
+                    <div id="readerPages" style="max-width:720px;margin:0 auto;padding:10px 0;"></div>
+                    <div style="text-align:center;padding:20px;display:flex;justify-content:center;gap:12px;">
+                        <button id="readerPrevBtn2" onclick="readerNavChapter(-1)" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:10px 24px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;">◀ الفصل السابق</button>
+                        <button id="readerNextBtn2" onclick="readerNavChapter(1)"  style="background:var(--accent);border:none;color:#fff;padding:10px 24px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;">الفصل التالي ▶</button>
                     </div>
                 </section>
 
@@ -834,7 +938,7 @@
                     <div id="leaderboardContent"></div>
                 </section>
 
-                <section class="page" id="page-admin">
+                <section class="page" id="page-admin" style="display:none !important;">
                     <div class="section-title">⚙️ لوحة الإدارة</div>
                     <div class="admin-warning">
                         ⚠️ هذه اللوحة مخصصة للمسؤولين فقط. عند ربط السيرفر ستُحفظ البيانات على قاعدة البيانات تلقائيًا.
@@ -846,7 +950,18 @@
                             <div class="form-group"><label>اسم المؤلف *</label><input type="text" id="adminAuthor" placeholder="مثال: KIM Hyun-soo"></div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group"><label>رابط الغلاف (URL)</label><input type="text" id="adminCover" placeholder="https://example.com/cover.jpg"></div>
+                            <div class="form-group">
+                                <label>🖼️ غلاف العمل</label>
+                                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                                    <input type="file" id="adminCoverFile" accept="image/*" onchange="previewCover(this)" style="flex:1;min-width:180px;padding:8px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                                    <span style="color:var(--text-muted);font-size:13px;">أو</span>
+                                    <input type="text" id="adminCover" placeholder="رابط الغلاف (URL)" style="flex:1;min-width:180px;">
+                                </div>
+                                <div id="coverPreview" style="margin-top:10px;display:none;">
+                                    <img id="coverPreviewImg" style="width:80px;height:110px;object-fit:cover;border-radius:8px;border:2px solid var(--accent);">
+                                    <button onclick="clearCoverFile()" style="margin-right:8px;background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">✕ إزالة</button>
+                                </div>
+                            </div>
                             <div class="form-group"><label>التقييم (1-10)</label><input type="number" id="adminRating" min="1" max="10" step="0.1" value="8.0"></div>
                             <div class="form-group"><label>الحالة</label><select id="adminStatus"><option value="مستمر">مستمر</option><option value="مكتمل">مكتمل</option><option value="متوقف">متوقف</option></select></div>
                         </div>
@@ -873,7 +988,13 @@
                             <div class="chapter-entry" id="chEntry_1">
                                 <input type="number" placeholder="رقم الفصل" value="1" style="width:100px;flex:unset">
                                 <input type="text" placeholder="عنوان الفصل (عربي)">
-                                <input type="number" placeholder="عدد الصفحات" value="24" style="width:110px;flex:unset">
+                                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;">
+                                    <label style="font-size:12px;color:var(--text-muted);white-space:nowrap;">📄 صفحات الفصل:</label>
+                                    <input type="file" accept="image/*" multiple class="chapter-pages-input"
+                                        style="flex:1;min-width:150px;padding:6px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;"
+                                        onchange="updatePageCount(this, 1)">
+                                    <span id="pageCount_1" style="font-size:12px;color:var(--accent-green);white-space:nowrap;">0 صفحة</span>
+                                </div>
                                 <button class="btn-danger" onclick="removeChapterEntry(1)">حذف</button>
                             </div>
                         </div>
@@ -895,10 +1016,13 @@
             updateSidebarUser();
             setupFilters();
             setupSearch();
+            // تحقق من Discord OAuth callback أولاً
+            await handleOAuthCallback();
             await loadMangaFromDB();
             renderCarousel();
             renderMangaGrid();
             await loadUsersFromDB();
+            ensureStorageBuckets(); // إنشاء الـ buckets في الخلفية
             // إعادة تحميل الصفحة الحالية إذا كانت محفوظة
             if (currentPage && currentPage !== 'home') goToPage(currentPage);
         }
@@ -931,10 +1055,18 @@
 
         // ==================== التنقل بين الصفحات ====================
         function goToPage(p) {
-            // إذا كانت الصفحة admin، تحقق من الصلاحيات
-            if (p === 'admin' && !adminAuthenticated) {
-                document.getElementById('adminPasswordModal').classList.add('show');
-                return;
+            // لوحة الإدارة — للأدمن بس
+            if (p === 'admin') {
+                if (!adminAuthenticated) {
+                    document.getElementById('adminPasswordModal').classList.add('show');
+                    return;
+                }
+                // أظهر الصفحة بس للأدمن
+                document.getElementById('page-admin').style.removeProperty('display');
+            } else {
+                // أخفي صفحة الإدارة دايماً لما تمشي منها
+                const adminPage = document.getElementById('page-admin');
+                if (adminPage) adminPage.style.setProperty('display', 'none', 'important');
             }
             currentPage = p;
             document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
@@ -952,17 +1084,27 @@
             saveToStorage();
         }
 
-        // ==================== دوال الأدمن (كلمة المرور) ====================
+        // ==================== دوال الأدمن ====================
         function checkAdminPassword() {
-            const pass = document.getElementById('adminPasswordInput').value;
-            if (pass === ADMIN_PASSWORD) {
+            const u = document.getElementById('adminUsernameInput').value.trim();
+            const p = document.getElementById('adminPasswordInput').value.trim();
+            if (!u || !p) { showToast('⚠️ أدخل اسم المستخدم وكلمة المرور'); return; }
+            // التحقق عبر hash بسيط
+            const _h = s => [...s].reduce((a,c)=>Math.imul(31,a)+c.charCodeAt(0)|0,0)>>>0;
+            const validU = 2013175396;  // hash of username
+            const validP = 761560361;   // hash of password
+            if (_h(u) === validU && _h(p) === validP) {
                 adminAuthenticated = true;
                 document.getElementById('adminPasswordModal').classList.remove('show');
+                document.getElementById('adminNavLink').style.display = '';
+                document.getElementById('adminUsernameInput').value = '';
+                document.getElementById('adminPasswordInput').value = '';
                 saveToStorage();
                 goToPage('admin');
-                showToast('✅ تم التحقق، أهلاً بالمسؤول');
+                showToast('✅ أهلاً يا السكري 👑');
             } else {
-                showToast('❌ كلمة مرور خاطئة');
+                showToast('❌ اسم المستخدم أو كلمة المرور غلط');
+                document.getElementById('adminPasswordInput').value = '';
             }
         }
         function closeAdminPasswordModal() {
@@ -1095,9 +1237,11 @@
             document.getElementById('detailsViews').textContent = '👁️ ' + formatViews(m.views) + ' مشاهدة';
             document.getElementById('detailsGenres').innerHTML = m.genres.map(g => `<span class="genre-tag">${g}</span>`).join('');
             document.getElementById('detailsDesc').textContent = m.description;
+            // زرار إضافة فصل للأدمن بس
+            document.getElementById('adminAddChapterBtn').style.display = adminAuthenticated ? 'inline' : 'none';
             const st = getMangaListStatuses(m.id);
             document.getElementById('detailsActionButtons').innerHTML = `
-                <button class="action-btn${st.watching ? ' watching-active' : ''}" onclick="toggleList(${m.id},'watching');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">📖 ${st.watching ? '✅ تشاهدها' : 'أشاهدها حاليًا'}</button>
+                <button class="action-btn${st.watching ? ' watching-active' : ''}" onclick="toggleList(${m.id},'watching');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">📖 ${st.watching ? '✅ أشاهدها' : 'أشاهدها حاليًا'}</button>
                 <button class="action-btn${st.want ? ' active-action' : ''}" onclick="toggleList(${m.id},'want');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">💖 ${st.want ? '✅ مرغوبة' : 'أرغب بمشاهدتها'}</button>
                 <button class="action-btn${st.completed ? ' completed-active' : ''}" onclick="toggleList(${m.id},'completed');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">✅ ${st.completed ? '✅ مكتملة' : 'أتممت مشاهدتها'}</button>
                 <button class="action-btn${st.dropped ? ' active-action' : ''}" onclick="toggleList(${m.id},'dropped');renderMangaDetails(mangaList.find(x=>x.id===${m.id}))">🚫 ${st.dropped ? '✅ مهملة' : 'لا أرغب بها'}</button>`;
@@ -1108,11 +1252,162 @@
             updateNavButtons(m);
         }
         function renderChapterList(m) {
-            document.getElementById('chapterList').innerHTML = m.chapters.map((ch, i) => `
-                <div class="ch-item${i === currentChapterIndex ? ' active-ch' : ''}" onclick="selectChapter(${i})">
-                    <span>📄 فصل ${ch.number}: ${ch.title}</span>
-                    <span style="color:var(--text-muted);font-size:12px;">${ch.pages} صفحة</span>
+            const sorted = m.chapters.slice().sort((a, b) => a.number - b.number);
+            document.getElementById('chapterList').innerHTML = sorted.length === 0
+                ? '<div style="text-align:center;padding:30px;color:var(--text-muted);">لا توجد فصول بعد</div>'
+                : sorted.map(ch => {
+                    const idx = m.chapters.indexOf(ch);
+                    const hasPages = ch.pageUrls && ch.pageUrls.length > 0;
+                    return `
+                    <div class="ch-item${idx === currentChapterIndex ? ' active-ch' : ''}"
+                         onclick="selectChapter(${idx})"
+                         style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-radius:10px;margin-bottom:6px;cursor:pointer;background:var(--bg-card);border:1px solid ${idx === currentChapterIndex ? 'var(--accent)' : 'var(--border)'};transition:var(--transition);">
+                        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+                            <span style="font-size:20px;">${hasPages ? '📖' : '📄'}</span>
+                            <div>
+                                <div style="font-weight:bold;font-size:14px;">فصل ${ch.number}: ${ch.title}</div>
+                                <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${ch.pages || 0} صفحة${hasPages ? ' • جاهز للقراءة' : ' • لا توجد صفحات'}</div>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+                            ${hasPages
+                                ? `<button onclick="event.stopPropagation();openReader(${m.id},${idx})"
+                                    style="background:var(--accent);color:#fff;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;font-weight:bold;white-space:nowrap;">
+                                    قراءة ▶
+                                   </button>`
+                                : `<span style="font-size:12px;color:var(--text-muted);padding:8px 10px;border:1px solid var(--border);border-radius:8px;">قريباً</span>`
+                            }
+                        </div>
+                    </div>`;
+                }).join('');
+        }
+
+        // ==================== إضافة فصل لمنجا موجودة ====================
+        let addChapterTargetId = null;
+
+        function openAddChapterModal() {
+            const m = mangaList.find(x => x.id === currentMangaId);
+            if (!m) { showToast('⚠️ افتح صفحة المنجا أولاً'); return; }
+            addChapterTargetId = m.id;
+            document.getElementById('addChapterMangaName').textContent = '📚 ' + m.title;
+            const maxNum = m.chapters.length ? Math.max(...m.chapters.map(c => c.number)) : 0;
+            document.getElementById('newChapterNum').value = maxNum + 1;
+            document.getElementById('newChapterTitle').value = '';
+            document.getElementById('newChapterPages').value = '';
+            document.getElementById('newChapterPageCount').textContent = '0 صفحة';
+            document.getElementById('addChapterModal').classList.add('show');
+        }
+
+        async function submitNewChapter() {
+            const m = mangaList.find(x => x.id === addChapterTargetId);
+            if (!m) return;
+            const chNum   = parseInt(document.getElementById('newChapterNum').value) || 1;
+            const chTitle = document.getElementById('newChapterTitle').value.trim() || `فصل ${chNum}`;
+            const filesInput = document.getElementById('newChapterPages');
+            const pageFiles  = [...filesInput.files].sort((a, b) => {
+                return (parseInt(a.name.match(/\d+/)?.[0] ?? '0')) - (parseInt(b.name.match(/\d+/)?.[0] ?? '0'));
+            });
+            if (pageFiles.length === 0) { showToast('⚠️ اختر صفحات الفصل'); return; }
+
+            document.getElementById('addChapterModal').classList.remove('show');
+            showLoading();
+            showToast(`⏳ رفع فصل ${chNum} — ${pageFiles.length} صفحة...`);
+
+            try {
+                const pageUrls = [];
+                const folderKey = `ch${String(chNum).padStart(3,'0')}_${Date.now()}`;
+                for (let j = 0; j < pageFiles.length; j++) {
+                    const ext = pageFiles[j].name.split('.').pop().toLowerCase();
+                    const url = await uploadImageToSupabase(
+                        pageFiles[j], 'chapters',
+                        `${folderKey}/page_${String(j+1).padStart(3,'0')}.${ext}`
+                    );
+                    pageUrls.push(url);
+                    if ((j+1) % 5 === 0) showToast(`📤 ${j+1}/${pageFiles.length} صفحة...`);
+                }
+
+                const newChapter = { number: chNum, title: chTitle, pages: pageFiles.length, pageUrls };
+                m.chapters.push(newChapter);
+                m.chapters.sort((a, b) => a.number - b.number);
+
+                // حفظ في Supabase
+                await SB.patch('manga', m.id, { chapters: m.chapters });
+
+                showToast(`✅ تم رفع فصل ${chNum} بنجاح!`);
+                renderMangaDetails(m);
+            } catch (e) {
+                showToast('❌ ' + (e.message || 'فشل الرفع').slice(0, 80));
+            }
+            hideLoading();
+        }
+
+        // ==================== عارض الفصول ====================
+        let readerMangaId = null;
+        let readerChapterIndex = 0;
+
+        function openReader(mangaId, chapterIndex) {
+            readerMangaId = mangaId;
+            readerChapterIndex = chapterIndex;
+            renderReader();
+            goToPage('reader');
+            document.getElementById('mainContent').scrollTop = 0;
+        }
+
+        function closeReader() {
+            goToPage('details');
+        }
+
+        function renderReader() {
+            const m = mangaList.find(x => x.id === readerMangaId);
+            if (!m) return;
+            const ch = m.chapters[readerChapterIndex];
+            if (!ch) return;
+
+            // العنوان
+            document.getElementById('readerTitle').textContent = `${m.title} — فصل ${ch.number}: ${ch.title}`;
+
+            // أزرار التنقل
+            const hasPrev = readerChapterIndex > 0;
+            const hasNext = readerChapterIndex < m.chapters.length - 1;
+            ['readerPrevBtn','readerPrevBtn2'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.disabled = !hasPrev;
+            });
+            ['readerNextBtn','readerNextBtn2'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.disabled = !hasNext;
+            });
+
+            // الصفحات مرتبة ومرقمة
+            const urls = ch.pageUrls || [];
+            if (urls.length === 0) {
+                document.getElementById('readerPages').innerHTML =
+                    '<div style="text-align:center;padding:60px;color:var(--text-muted);">📭 لا توجد صفحات لهذا الفصل</div>';
+                return;
+            }
+
+            document.getElementById('readerPages').innerHTML = urls.map((url, i) => `
+                <div style="position:relative;margin-bottom:4px;">
+                    <div style="position:absolute;top:8px;right:10px;background:rgba(0,0,0,0.65);color:#fff;
+                        font-size:12px;padding:2px 8px;border-radius:12px;font-family:Cairo,sans-serif;z-index:2;">
+                        ${i + 1} / ${urls.length}
+                    </div>
+                    <img src="${url}" alt="صفحة ${i+1}"
+                        loading="lazy"
+                        style="width:100%;display:block;background:var(--bg-card);"
+                        onerror="this.style.background='var(--bg-hover)';this.alt='❌ تعذّر تحميل الصفحة ${i+1}';">
                 </div>`).join('');
+        }
+
+        function readerNavChapter(dir) {
+            const m = mangaList.find(x => x.id === readerMangaId);
+            if (!m) return;
+            const ni = readerChapterIndex + dir;
+            if (ni >= 0 && ni < m.chapters.length) {
+                readerChapterIndex = ni;
+                renderReader();
+                document.getElementById('mainContent').scrollTop = 0;
+            }
         }
         function selectChapter(i) {
             currentChapterIndex = i;
@@ -1167,16 +1462,15 @@
 
         // ==================== المتصدرون ====================
         function renderLeaderboard() {
-            // تبسيط: نعرض كل المستخدمين مع بياناتهم
             const container = document.getElementById('leaderboardContent');
             let players = [...allUsers];
             if (loggedInUser && !players.find(p => p.id === loggedInUser.id)) {
                 players.push({
                     id: loggedInUser.id,
                     name: loggedInUser.name,
-                    avatar: loggedInUser.avatar,
+                    avatar: loggedInUser.avatar || '',
                     read_count: Object.values(userLists).flat().length,
-                    friends_count: friendsList.length
+                    friends: friendsList.length   // ✅ مصلّح: friends بدل friends_count
                 });
             }
             players.sort((a, b) => (b.read_count || 0) - (a.read_count || 0));
@@ -1193,7 +1487,7 @@
                             <td><div class="lb-avatar">${u.avatar ? `<img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : '👤'}</div></td>
                             <td><strong>${u.name}</strong>${isMe ? ' <span style="color:var(--accent);font-size:12px;">(أنت)</span>' : ''}</td>
                             <td class="lb-stat-read">📚 ${u.read_count || 0}</td>
-                            <td class="lb-stat">👥 ${u.friends_count || 0}</td>
+                            <td class="lb-stat">👥 ${u.friends || 0}</td>
                         </tr>`;
                     }).join('')}</tbody>
                 </table>`;
@@ -1258,6 +1552,12 @@
 
         // ==================== لوحة الإدارة (للأدمن فقط) ====================
         function renderAdminPanel() {
+            // حماية مضاعفة — لو مش أدمن ميشوفش حاجة
+            if (!adminAuthenticated) {
+                document.getElementById('adminPasswordModal').classList.add('show');
+                goToPage('home');
+                return;
+            }
             document.getElementById('adminMangaCount').textContent = mangaList.length;
             document.getElementById('adminMangaList').innerHTML = mangaList.map(m => `
                 <div class="manga-admin-item">
@@ -1277,7 +1577,13 @@
             div.innerHTML = `
                 <input type="number" placeholder="رقم الفصل" value="${chapterEntryCount}" style="width:100px;flex:unset">
                 <input type="text" placeholder="عنوان الفصل (عربي)">
-                <input type="number" placeholder="عدد الصفحات" value="24" style="width:110px;flex:unset">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;">
+                    <label style="font-size:12px;color:var(--text-muted);white-space:nowrap;">📄 صفحات الفصل:</label>
+                    <input type="file" accept="image/*" multiple class="chapter-pages-input"
+                        style="flex:1;min-width:150px;padding:6px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;"
+                        onchange="updatePageCount(this, ${chapterEntryCount})">
+                    <span id="pageCount_${chapterEntryCount}" style="font-size:12px;color:var(--accent-green);white-space:nowrap;">0 صفحة</span>
+                </div>
                 <button class="btn-danger" onclick="removeChapterEntry(${chapterEntryCount})">حذف</button>`;
             document.getElementById('chapterBuilder').appendChild(div);
         }
@@ -1286,53 +1592,179 @@
             if (el && document.querySelectorAll('.chapter-entry').length > 1) el.remove();
             else showToast('⚠️ يجب أن يكون هناك فصل واحد على الأقل');
         }
+        // ==================== دوال مساعدة للصور ====================
+        function previewCover(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('coverPreviewImg').src = e.target.result;
+                document.getElementById('coverPreview').style.display = 'flex';
+                document.getElementById('coverPreview').style.alignItems = 'center';
+                document.getElementById('coverPreview').style.gap = '8px';
+                document.getElementById('adminCover').value = '';
+            };
+            reader.readAsDataURL(file);
+        }
+        function clearCoverFile() {
+            document.getElementById('adminCoverFile').value = '';
+            document.getElementById('coverPreview').style.display = 'none';
+            document.getElementById('coverPreviewImg').src = '';
+        }
+        function updatePageCount(input, entryId) {
+            const count = input.files.length;
+            const el = document.getElementById(`pageCount_${entryId}`);
+            if (el) el.textContent = count + ' صفحة';
+        }
+
+        // رفع صورة لـ Supabase Storage مباشرة
+        async function uploadImageToSupabase(file, bucket, path) {
+            // تنظيف المسار من أي حرف غير مقبول في Supabase
+            const cleanPath = path
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')   // diacritics
+                .replace(/[\u0600-\u06FF]/g, '')    // Arabic letters
+                .replace(/[^a-zA-Z0-9/_.\-]/g, '')  // everything else except safe chars
+                .replace(/\/+/g, '/')               // double slashes
+                .replace(/^\//, '');                // leading slash
+            const r = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${cleanPath}`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': file.type,
+                    'x-upsert': 'true'
+                },
+                body: file
+            });
+            if (!r.ok) {
+                const err = await r.json().catch(() => ({}));
+                throw new Error(err.message || `Upload failed: ${r.status}`);
+            }
+            return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${cleanPath}`;
+        }
+
         async function adminAddManga() {
-            const title = document.getElementById('adminTitle').value.trim();
-            const author = document.getElementById('adminAuthor').value.trim();
-            const cover = document.getElementById('adminCover').value.trim();
-            const rating = parseFloat(document.getElementById('adminRating').value) || 8.0;
-            const status = document.getElementById('adminStatus').value;
-            const desc = document.getElementById('adminDesc').value.trim();
-            if (!title || !author || !desc) { showToast('⚠️ املأ الحقول المطلوبة'); return; }
+            const titleEl  = document.getElementById('adminTitle');
+            const authorEl = document.getElementById('adminAuthor');
+            const descEl   = document.getElementById('adminDesc');
+            const title  = titleEl  ? titleEl.value.trim()  : '';
+            const author = authorEl ? authorEl.value.trim() : '';
+            const desc   = descEl   ? descEl.value.trim()   : '';
+
+            if (!title)  { showToast('⚠️ أدخل اسم العمل');   titleEl?.focus();  return; }
+            if (!author) { showToast('⚠️ أدخل اسم المؤلف'); authorEl?.focus(); return; }
+            if (!desc)   { showToast('⚠️ أدخل وصف العمل');  descEl?.focus();   return; }
+
+            const rating = parseFloat(document.getElementById('adminRating')?.value) || 8.0;
+            const status = document.getElementById('adminStatus')?.value || 'مستمر';
             const genres = [...document.querySelectorAll('.genre-checkbox:checked')].map(g => g.value);
             if (!genres.length) { showToast('⚠️ اختر تصنيفًا على الأقل'); return; }
-            const chapters = [...document.querySelectorAll('.chapter-entry')].map(entry => {
-                const inputs = entry.querySelectorAll('input');
-                return {
-                    number: parseInt(inputs[0].value) || 1,
-                    title: inputs[1].value.trim() || 'فصل بدون عنوان',
-                    pages: parseInt(inputs[2].value) || 20
-                };
-            });
+
             showLoading();
+            showToast('⏳ جاري رفع الملفات...');
+
             try {
+                // ---- رفع الغلاف ----
+                let coverUrl = document.getElementById('adminCover')?.value.trim() || '';
+                const coverFile = document.getElementById('adminCoverFile')?.files[0];
+                if (coverFile) {
+                    const ext = coverFile.name.split('.').pop().toLowerCase();
+                    coverUrl = await uploadImageToSupabase(
+                        coverFile, 'covers',
+                        `cover_${Date.now()}.${ext}`
+                    );
+                    showToast('✅ تم رفع الغلاف');
+                }
+
+                // ---- رفع صفحات الفصول ----
+                const chapters = [];
+                for (const entry of document.querySelectorAll('.chapter-entry')) {
+                    const numInput  = entry.querySelector('input[type="number"]');
+                    const textInput = entry.querySelector('input[type="text"]');
+                    const filesInput = entry.querySelector('.chapter-pages-input');
+                    const chNum   = parseInt(numInput?.value)  || 1;
+                    const chTitle = textInput?.value.trim()     || `فصل ${chNum}`;
+
+                    // ترتيب الصفحات حسب اسم الملف رقمياً
+                    const rawFiles  = filesInput ? [...filesInput.files] : [];
+                    const pageFiles = rawFiles.sort((a, b) => {
+                        const numA = parseInt(a.name.match(/\d+/)?.[0] ?? '0');
+                        const numB = parseInt(b.name.match(/\d+/)?.[0] ?? '0');
+                        return numA - numB;
+                    });
+
+                    const pageUrls = [];
+                    if (pageFiles.length > 0) {
+                        showToast(`⏳ رفع فصل ${chNum} — ${pageFiles.length} صفحة...`);
+                        const folderKey = `ch${String(chNum).padStart(3,'0')}_${Date.now()}`;
+                        for (let j = 0; j < pageFiles.length; j++) {
+                            const ext = pageFiles[j].name.split('.').pop().toLowerCase();
+                            const url = await uploadImageToSupabase(
+                                pageFiles[j], 'chapters',
+                                `${folderKey}/page_${String(j+1).padStart(3,'0')}.${ext}`
+                            );
+                            pageUrls.push(url);
+                            if ((j+1) % 5 === 0) showToast(`📤 ${j+1}/${pageFiles.length} صفحة...`);
+                        }
+                    }
+                    chapters.push({ number: chNum, title: chTitle, pages: pageFiles.length, pageUrls });
+                }
+
+                // ---- حفظ في Supabase ----
                 const result = await SB.post('manga', {
-                    title, author, cover, rating,
-                    genres, status, views: 0,
-                    description: desc, chapters
+                    title, author,
+                    cover: coverUrl,
+                    rating, genres, status,
+                    views: 0, description: desc, chapters
                 });
+
+                if (!result || !result[0]) throw new Error('لم يُرجع Supabase بيانات — تأكد من جدول manga والـ RLS');
                 mangaList.push(result[0]);
-                showToast('✅ تمت إضافة العمل إلى Supabase');
+                showToast('✅ تمت إضافة العمل بنجاح!');
+
                 // إعادة تعيين النموذج
-                ['adminTitle','adminAuthor','adminCover','adminDesc'].forEach(id => document.getElementById(id).value = '');
-                document.getElementById('adminRating').value = '8.0';
+                ['adminTitle','adminAuthor','adminCover','adminDesc'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = '';
+                });
+                const ratingEl = document.getElementById('adminRating');
+                if (ratingEl) ratingEl.value = '8.0';
+                const coverFileEl = document.getElementById('adminCoverFile');
+                if (coverFileEl) coverFileEl.value = '';
+                const prevEl = document.getElementById('coverPreview');
+                if (prevEl) prevEl.style.display = 'none';
                 document.querySelectorAll('.genre-checkbox').forEach(c => c.checked = false);
-                document.getElementById('chapterBuilder').innerHTML = `
-                    <div class="chapter-entry" id="chEntry_1">
-                        <input type="number" placeholder="رقم الفصل" value="1" style="width:100px;flex:unset">
-                        <input type="text" placeholder="عنوان الفصل (عربي)">
-                        <input type="number" placeholder="عدد الصفحات" value="24" style="width:110px;flex:unset">
-                        <button class="btn-danger" onclick="removeChapterEntry(1)">حذف</button>
-                    </div>`;
+                document.getElementById('chapterBuilder').innerHTML = buildFirstChapterEntry();
                 chapterEntryCount = 1;
+
                 renderAdminPanel();
                 renderCarousel();
                 renderMangaGrid(currentFilter);
+
             } catch (e) {
-                console.error(e);
-                showToast('❌ فشل الحفظ - تأكد من إعداد Supabase');
+                console.error('adminAddManga error:', e);
+                // إظهار رسالة الخطأ الحقيقية
+                const msg = e?.message || e?.error_description || JSON.stringify(e);
+                showToast('❌ ' + msg.slice(0, 80));
             }
             hideLoading();
+        }
+
+        // HTML الفصل الأول (helper)
+        function buildFirstChapterEntry(num = 1) {
+            return `<div class="chapter-entry" id="chEntry_${num}">
+                <input type="number" placeholder="رقم الفصل" value="${num}" style="width:100px;flex:unset">
+                <input type="text" placeholder="عنوان الفصل (عربي)">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;">
+                    <label style="font-size:12px;color:var(--text-muted);white-space:nowrap;">📄 صفحات الفصل:</label>
+                    <input type="file" accept="image/*" multiple class="chapter-pages-input"
+                        style="flex:1;min-width:150px;padding:6px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;"
+                        onchange="updatePageCount(this, ${num})">
+                    <span id="pageCount_${num}" style="font-size:12px;color:var(--accent-green);white-space:nowrap;">0 صفحة</span>
+                </div>
+                <button class="btn-danger" onclick="removeChapterEntry(${num})">حذف</button>
+            </div>`;
         }
         async function adminDeleteManga(id) {
             if (!confirm('متأكد من حذف هذا العمل؟')) return;
@@ -1353,35 +1785,6 @@
         // ==================== المصادقة ====================
         function openLoginModal() { document.getElementById('loginModal').classList.add('show'); }
         function closeLoginModal() { document.getElementById('loginModal').classList.remove('show'); }
-        function showEmailLogin() {
-            document.getElementById('emailForm').style.display = 'block';
-        }
-        async function signUpWithEmail() {
-            const email = document.getElementById('emailInput').value;
-            const password = document.getElementById('passwordInput').value;
-            try {
-                const data = await signUp(email, password);
-                loggedInUser = { id: data.user.id, name: email.split('@')[0], avatar: '', provider: 'email' };
-                authToken = data.access_token;
-                onLoginSuccess();
-                showToast('✅ تم إنشاء الحساب بنجاح');
-            } catch (e) {
-                showToast('❌ ' + (e.msg || e.message));
-            }
-        }
-        async function signInWithEmail() {
-            const email = document.getElementById('emailInput').value;
-            const password = document.getElementById('passwordInput').value;
-            try {
-                const data = await signIn(email, password);
-                loggedInUser = { id: data.user.id, name: email.split('@')[0], avatar: '', provider: 'email' };
-                authToken = data.access_token;
-                onLoginSuccess();
-                showToast('✅ تم تسجيل الدخول');
-            } catch (e) {
-                showToast('❌ ' + (e.msg || e.message));
-            }
-        }
         function loginAsGuest() {
             const name = document.getElementById('guestName').value.trim();
             if (!name) { showToast('⚠️ أدخل اسمًا'); return; }
@@ -1405,6 +1808,7 @@
             userLists = { watching: [], want: [], completed: [], dropped: [] };
             friendsList = [];
             adminAuthenticated = false;
+            document.getElementById('adminNavLink').style.display = 'none';
             updateSidebarUser();
             saveToStorage();
             if (currentPage === 'admin') goToPage('home');
