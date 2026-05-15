@@ -2600,11 +2600,24 @@
                 try {
                     const fakeEmail = username.includes('@') ? username : username.replace(/\s+/g, '').toLowerCase() + '@abyss.local';
                     const data = await signIn(fakeEmail, password);
-                    loggedInUser = { id: data.user?.id || ('sb_' + username), name: username, avatar: '', provider: 'email' };
+                    const userId = data.user?.id || ('sb_' + username);
+                    loggedInUser = { id: userId, name: username, avatar: '', provider: 'email' };
                     authToken = data.access_token;
                     adminAuthenticated = false;
+                    // تحقق من صلاحيات الأدمن تلقائياً بعد الدخول
+                    try {
+                        const roles = await SB.get('user_roles', 'user_id=eq.' + userId + '&role=eq.admin', data.access_token);
+                        if (roles && roles.length > 0) {
+                            adminAuthenticated = true;
+                            document.getElementById('adminNavLink').style.display = '';
+                            showToast('✅ أهلاً يا مسؤول ' + username + ' 👑');
+                        } else {
+                            showToast('✅ أهلاً ' + username + ' 👋');
+                        }
+                    } catch (roleErr) {
+                        showToast('✅ أهلاً ' + username + ' 👋');
+                    }
                     onLoginSuccess();
-                    showToast('✅ أهلاً ' + username + ' 👋');
                     msgEl.textContent = '';
                 } catch (e) {
                     const msg = e?.message || e?.error_description || JSON.stringify(e);
