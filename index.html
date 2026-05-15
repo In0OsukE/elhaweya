@@ -147,6 +147,7 @@
         .main { flex: 1; overflow-y: auto; padding: 20px 24px; height: calc(100vh - 56px); }
         .page { display: none; }
         .page.active { display: block; }
+        #page-admin { display: none; }
 
         .carousel-section { margin-bottom: 28px; position: relative; }
         .carousel-container {
@@ -636,6 +637,8 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdXlocnNobmN0d2lseGdnY3lpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDU3MTUsImV4cCI6MjA5NDI4MTcxNX0.En9CcuL14vXP2LlgKLsTrg1DcJSPkEnZem7E2a-lgQI';               // ← غيّر هنا
         // ✅ كلمة مرور الأدمن محفوظة في Supabase بأمان (جدول settings)
 
+        // ✅ كلمة مرور الأدمن محفوظة في Supabase بأمان (جدول settings)
+
         // ==================== دوال Supabase (REST API) ====================
         const SB = {
             headers: (token) => ({
@@ -938,7 +941,7 @@
                     <div id="leaderboardContent"></div>
                 </section>
 
-                <section class="page" id="page-admin" style="display:none !important;">
+                <section class="page" id="page-admin">
                     <div class="section-title">⚙️ لوحة الإدارة</div>
                     <div class="admin-warning">
                         ⚠️ هذه اللوحة مخصصة للمسؤولين فقط. عند ربط السيرفر ستُحفظ البيانات على قاعدة البيانات تلقائيًا.
@@ -1023,6 +1026,9 @@
             renderMangaGrid();
             await loadUsersFromDB();
             ensureStorageBuckets(); // إنشاء الـ buckets في الخلفية
+            // أظهر الصفحة الرئيسية أولاً
+            const homePage = document.getElementById('page-home');
+            if (homePage) { homePage.style.display = 'block'; homePage.classList.add('active'); }
             // إعادة تحميل الصفحة الحالية إذا كانت محفوظة
             if (currentPage && currentPage !== 'home') goToPage(currentPage);
         }
@@ -1061,20 +1067,22 @@
                     document.getElementById('adminPasswordModal').classList.add('show');
                     return;
                 }
-                // أظهر الصفحة بس للأدمن
-                document.getElementById('page-admin').style.removeProperty('display');
-            } else {
-                // أخفي صفحة الإدارة دايماً لما تمشي منها
-                const adminPage = document.getElementById('page-admin');
-                if (adminPage) adminPage.style.setProperty('display', 'none', 'important');
             }
             currentPage = p;
             document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
             const link = document.querySelector(`.sidebar nav a[data-page="${p}"]`);
             if (link) link.classList.add('active');
-            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+            // أخفِ كل الصفحات أولاً
+            document.querySelectorAll('.page').forEach(pg => {
+                pg.classList.remove('active');
+                pg.style.display = 'none';
+            });
+            // أظهر الصفحة المطلوبة
             const pageEl = document.getElementById('page-' + p);
-            if (pageEl) pageEl.classList.add('active');
+            if (pageEl) {
+                pageEl.style.display = 'block';
+                pageEl.classList.add('active');
+            }
             if (p === 'mylist') renderMyList();
             if (p === 'friends') renderFriendsPage();
             if (p === 'leaderboard') renderLeaderboard();
