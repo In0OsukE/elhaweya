@@ -147,8 +147,8 @@
         .main { flex: 1; overflow-y: auto; padding: 20px 24px; height: calc(100vh - 56px); }
         .page { display: none; }
         .page.active { display: block; }
-        /* صفحة الأدمن تُعرض عبر admin-visible فقط */
-        #page-admin.admin-visible { display: block !important; }
+        /* صفحة الأدمن تُعرض عبر class فقط وليس inline style */
+        #page-admin.admin-visible { display: block; }
 
         .carousel-section { margin-bottom: 28px; position: relative; }
         .carousel-container {
@@ -785,12 +785,10 @@
     <div class="modal-overlay" id="adminPasswordModal">
         <div class="modal">
             <h3>🔐 صلاحيات المسؤول</h3>
-            <p style="margin-bottom:10px;color:var(--text-muted);font-size:13px;">أدخل بيانات المسؤول للوصول إلى لوحة التحكم</p>
+            <p style="margin-bottom:10px;">أدخل بيانات المسؤول للوصول إلى لوحة التحكم</p>
             <input type="text" id="adminUsernameInput" placeholder="البريد الإلكتروني للمسؤول" style="margin-bottom:8px;">
-            <input type="password" id="adminPasswordInput" placeholder="كلمة المرور"
-                onkeydown="if(event.key==='Enter') checkAdminPassword()">
-            <p id="adminAuthMsg" style="font-size:12px;color:var(--text-muted);min-height:18px;margin:4px 0;text-align:center;"></p>
-            <button onclick="checkAdminPassword()" class="btn-primary" style="width:100%;margin:6px 0;">دخول</button>
+            <input type="password" id="adminPasswordInput" placeholder="كلمة المرور">
+            <button onclick="checkAdminPassword()" class="btn-primary" style="width:100%;margin:10px 0;">دخول</button>
             <button onclick="closeAdminPasswordModal()" class="close-modal">إلغاء</button>
         </div>
     </div>
@@ -804,6 +802,7 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdXlocnNobmN0d2lseGdnY3lpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDU3MTUsImV4cCI6MjA5NDI4MTcxNX0.En9CcuL14vXP2LlgKLsTrg1DcJSPkEnZem7E2a-lgQI';               // ← غيّر هنا
         // ✅ كلمة مرور الأدمن محفوظة في Supabase بأمان (جدول settings)
 
+        /*
         =========================================================
         📋 SQL المطلوب تشغيله في Supabase → SQL Editor:
         =========================================================
@@ -851,32 +850,12 @@
                 'Authorization': `Bearer ${token || SUPABASE_KEY}`
             }),
 
-            // دالة مساعدة: تقرأ الـ response بأمان سواء JSON أو HTML
-            async _parseResponse(r, context = '') {
-                const text = await r.text();
-                if (!r.ok) {
-                    // لو الـ URL غلط أو KEY غلط، Supabase بيرجع HTML مش JSON
-                    if (text.trim().startsWith('<')) {
-                        throw new Error(
-                            `[${context}] HTTP ${r.status} — السيرفر أرجع HTML بدل JSON.\n` +
-                            `تأكد أن SUPABASE_URL صح (يبدأ بـ https://xxxx.supabase.co)\n` +
-                            `وأن SUPABASE_KEY مش فاضي.`
-                        );
-                    }
-                    let errObj;
-                    try { errObj = JSON.parse(text); } catch { errObj = { message: text.slice(0, 200) }; }
-                    throw errObj;
-                }
-                if (!text || text === 'null') return [];
-                try { return JSON.parse(text); }
-                catch (e) { throw new Error(`[${context}] JSON parse error: ${text.slice(0, 100)}`); }
-            },
-
             async get(table, query = '', token = null) {
                 const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
                     headers: SB.headers(token)
                 });
-                return SB._parseResponse(r, `GET ${table}`);
+                if (!r.ok) throw await r.json();
+                return r.json();
             },
 
             async post(table, body, token = null) {
@@ -885,7 +864,8 @@
                     headers: { ...SB.headers(token), 'Prefer': 'return=representation' },
                     body: JSON.stringify(body)
                 });
-                return SB._parseResponse(r, `POST ${table}`);
+                if (!r.ok) throw await r.json();
+                return r.json();
             },
 
             async patch(table, id, body, token = null) {
@@ -894,7 +874,8 @@
                     headers: { ...SB.headers(token), 'Prefer': 'return=representation' },
                     body: JSON.stringify(body)
                 });
-                return SB._parseResponse(r, `PATCH ${table}`);
+                if (!r.ok) throw await r.json();
+                return r.json();
             },
 
             async delete(table, id, token = null) {
@@ -902,7 +883,7 @@
                     method: 'DELETE',
                     headers: SB.headers(token)
                 });
-                if (!r.ok) await SB._parseResponse(r, `DELETE ${table}`);
+                if (!r.ok) throw await r.json();
             }
         };
 
@@ -1006,24 +987,8 @@
             }
         }
 
-        // ==================== التحقق من إعدادات Supabase ====================
-        function validateSupabaseConfig() {
-            const urlOk = SUPABASE_URL && SUPABASE_URL !== 'zzzz' && SUPABASE_URL.startsWith('https://');
-            const keyOk = SUPABASE_KEY && SUPABASE_KEY !== 'zzzzI' && SUPABASE_KEY.length > 20;
-            if (!urlOk || !keyOk) {
-                const msg = !urlOk
-                    ? '⚠️ SUPABASE_URL غير صحيح — يجب أن يكون https://xxxx.supabase.co'
-                    : '⚠️ SUPABASE_KEY فارغ أو غير صحيح';
-                showToast(msg);
-                console.error('Supabase config error:', { SUPABASE_URL, keyLength: SUPABASE_KEY?.length });
-                return false;
-            }
-            return true;
-        }
-
         // ==================== تحميل البيانات من Supabase ====================
         async function loadMangaFromDB() {
-            if (!validateSupabaseConfig()) { mangaList = []; return; }
             showLoading();
             try {
                 const rows = await SB.get('manga', 'order=views.desc');
@@ -1041,17 +1006,7 @@
                 }));
             } catch (e) {
                 console.error('خطأ في تحميل المانجا:', e);
-                // رسالة واضحة بدل SyntaxError المربك
-                const msg = e?.message || JSON.stringify(e);
-                if (msg.includes('HTML') || msg.includes('DOCTYPE') || msg.includes('Unexpected token')) {
-                    showToast('❌ SUPABASE_URL أو KEY غلط — راجع الكود السطر 799');
-                } else if (msg.includes('relation') || msg.includes('does not exist')) {
-                    showToast('❌ جدول manga مش موجود — شغّل الـ SQL في Supabase');
-                } else if (msg.includes('JWT') || msg.includes('Invalid API key')) {
-                    showToast('❌ SUPABASE_KEY منتهي أو غلط');
-                } else {
-                    showToast('❌ ' + msg.slice(0, 70));
-                }
+                showToast('❌ تأكد من إعداد Supabase في الكود');
                 mangaList = [];
             }
             hideLoading();
@@ -1531,83 +1486,56 @@
         // ==================== دوال الأدمن ====================
         async function checkAdminPassword() {
             const email = document.getElementById('adminUsernameInput').value.trim();
-            const pass  = document.getElementById('adminPasswordInput').value;
-            const msgEl = document.getElementById('adminAuthMsg');
+            const pass = document.getElementById('adminPasswordInput').value;
 
             if (!email || !pass) {
-                if (msgEl) msgEl.textContent = '⚠️ أدخل البريد الإلكتروني وكلمة المرور';
-                return;
-            }
-
-            if (!validateSupabaseConfig()) {
-                if (msgEl) msgEl.textContent = '❌ Supabase غير مضبوط — أضف URL و KEY في الكود أولاً';
+                showToast('⚠️ أدخل البريد الإلكتروني وكلمة المرور');
                 return;
             }
 
             try {
-                if (msgEl) msgEl.textContent = '⏳ جاري التحقق...';
                 const authData = await signIn(email, pass);
-                if (!authData?.access_token) {
-                    if (msgEl) msgEl.textContent = '❌ فشل تسجيل الدخول';
+                if (!authData || !authData.user) {
+                    showToast('❌ فشل تسجيل الدخول');
                     return;
                 }
 
-                // التحقق من جدول user_roles
-                let isAdmin = false;
-                try {
-                    const roles = await SB.get(
-                        'user_roles',
-                        `user_id=eq.${authData.user.id}&role=eq.admin`,
-                        authData.access_token
-                    );
-                    isAdmin = roles && roles.length > 0;
-                } catch (rolesErr) {
-                    // جدول user_roles مش موجود بعد → أي حساب Supabase مؤقتاً = أدمن
-                    console.warn('user_roles not found, granting access temporarily:', rolesErr);
-                    isAdmin = true;
-                }
+                const roles = await SB.get(
+                    'user_roles',
+                    `user_id=eq.${authData.user.id}&role=eq.admin`,
+                    authData.access_token
+                );
 
-                if (!isAdmin) {
-                    if (msgEl) msgEl.textContent = '⛔ هذا الحساب ليس له صلاحيات المسؤول';
+                if (!roles || roles.length === 0) {
+                    showToast('⛔ ليس لديك صلاحيات المسؤول');
+                    await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
+                        method: 'POST',
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${authData.access_token}` }
+                    });
                     return;
                 }
 
-                grantAdminAccess(authData.user, authData.access_token);
+                adminAuthenticated = true;
+                authToken = authData.access_token;
+                loggedInUser = {
+                    id: authData.user.id,
+                    name: authData.user.email,
+                    avatar: '',
+                    provider: 'email'
+                };
+
+                document.getElementById('adminPasswordModal').classList.remove('show');
+                document.getElementById('adminNavLink').style.display = '';
+                document.getElementById('adminUsernameInput').value = '';
+                document.getElementById('adminPasswordInput').value = '';
+                saveToStorage();
+                goToPage('admin');
+                showToast('✅ أهلاً يا مسؤول 👑');
 
             } catch (error) {
-                const msg = error?.message || error?.error_description || JSON.stringify(error);
-                if (msg.includes('400') || msg.includes('Invalid login') || msg.includes('invalid_grant')) {
-                    if (msgEl) msgEl.textContent = '❌ بريد إلكتروني أو كلمة مرور غلط';
-                } else if (msg.includes('Email not confirmed')) {
-                    if (msgEl) msgEl.textContent = '❌ يجب تأكيد البريد الإلكتروني أولاً من inbox';
-                } else if (msg.includes('429')) {
-                    if (msgEl) msgEl.textContent = '⚠️ محاولات كثيرة — انتظر دقيقة';
-                } else {
-                    if (msgEl) msgEl.textContent = '❌ ' + msg.slice(0, 60);
-                }
-                console.error('checkAdminPassword:', error);
+                console.error(error);
+                showToast('❌ خطأ في تسجيل الدخول: ' + (error.message || 'بيانات غير صحيحة'));
             }
-        }
-
-        function grantAdminAccess(user, token = null) {
-            adminAuthenticated = true;
-            if (token) authToken = token;
-            loggedInUser = loggedInUser || {
-                id: user.id || 'admin',
-                name: user.email || 'المسؤول',
-                avatar: '',
-                provider: 'email'
-            };
-            document.getElementById('adminPasswordModal').classList.remove('show');
-            document.getElementById('adminNavLink').style.display = '';
-            document.getElementById('adminUsernameInput').value = '';
-            document.getElementById('adminPasswordInput').value = '';
-            const msgEl = document.getElementById('adminAuthMsg');
-            if (msgEl) msgEl.textContent = '';
-            updateSidebarUser();
-            saveToStorage();
-            goToPage('admin');
-            showToast('✅ أهلاً يا مسؤول 👑');
         }
 
         function closeAdminPasswordModal() {
@@ -2575,92 +2503,51 @@
             if (submitBtn) submitBtn.textContent = mode === 'login' ? 'دخول' : 'إنشاء حساب';
         }
 
-        let _authInProgress = false; // منع الضغط المتكرر (سبب الـ 429)
         async function handleUserPassAuth() {
-            if (_authInProgress) return;
             const username = document.getElementById('upUsername').value.trim();
             const password = document.getElementById('upPassword').value;
             const msgEl = document.getElementById('upMsg');
             if (!username || !password) { msgEl.textContent = '⚠️ أدخل اسم المستخدم وكلمة المرور'; return; }
-            if (password.length < 6) { msgEl.textContent = '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل'; return; }
-
-            _authInProgress = true;
             msgEl.textContent = '⏳ جاري...';
-            document.getElementById('upSubmitBtn').disabled = true;
-
-            // لو Supabase مش متصل → دخول محلي فوري
-            if (!validateSupabaseConfig()) {
-                _localLogin(username);
-                _authInProgress = false;
-                document.getElementById('upSubmitBtn').disabled = false;
-                return;
-            }
 
             if (upMode === 'login') {
                 try {
-                    const fakeEmail = username.replace(/\s+/g, '').toLowerCase() + '@abyss.local';
+                    const fakeEmail = username.replace(/\s+/g, '') + '@abyss.local';
                     const data = await signIn(fakeEmail, password);
-                    loggedInUser = { id: data.user?.id || ('sb_' + username), name: username, avatar: '', provider: 'email' };
+                    loggedInUser = { id: data.user?.id || username, name: username, avatar: '', provider: 'email' };
                     authToken = data.access_token;
-                    adminAuthenticated = false;
+                    adminAuthenticated = false; // الأدمن يحدد بكلمة مرور منفصلة
                     onLoginSuccess();
                     showToast('✅ أهلاً ' + username + ' 👋');
                     msgEl.textContent = '';
                 } catch (e) {
-                    const msg = e?.message || e?.error_description || JSON.stringify(e);
-                    if (msg.includes('Invalid login') || msg.includes('400')) {
-                        // حساب مش موجود في Supabase → دخول محلي
-                        _localLogin(username);
-                    } else if (msg.includes('429') || msg.includes('rate limit')) {
-                        msgEl.textContent = '⚠️ كثير من المحاولات — انتظر دقيقة وحاول مجدداً';
-                    } else {
-                        // أي خطأ آخر → دخول محلي
-                        _localLogin(username);
-                    }
+                    loggedInUser = { id: 'local_' + username, name: username, avatar: '', provider: 'local' };
+                    authToken = null;
+                    adminAuthenticated = false;
+                    onLoginSuccess();
+                    showToast('👋 أهلاً ' + username);
+                    msgEl.textContent = '';
                 }
             } else {
-                // وضع التسجيل
                 const email = document.getElementById('upEmail').value.trim();
-                if (!email || !email.includes('@')) { msgEl.textContent = '⚠️ أدخل بريد إلكتروني صحيح'; _authInProgress = false; document.getElementById('upSubmitBtn').disabled = false; return; }
+                if (!email) { msgEl.textContent = '⚠️ أدخل البريد الإلكتروني'; return; }
                 try {
                     const regData = await signUp(email, password);
-                    // Supabase بيطلب تأكيد الإيميل — نعلم المستخدم
-                    const userId = regData.user?.id || regData.id;
-                    if (userId) {
-                        loggedInUser = { id: userId, name: username, avatar: '', provider: 'email' };
-                        authToken = regData.access_token || null;
-                        adminAuthenticated = false;
-                        onLoginSuccess();
-                        showToast('✅ تم إنشاء الحساب — تحقق من بريدك الإلكتروني 📧');
-                        msgEl.textContent = '';
-                    } else {
-                        // Supabase طلب تأكيد الإيميل قبل الوصول
-                        msgEl.textContent = '📧 تم الإرسال — تحقق من بريدك الإلكتروني لتفعيل الحساب';
-                    }
+                    loggedInUser = {
+                        id: regData.user?.id || regData.id || ('reg_' + Date.now()),
+                        name: username,
+                        avatar: '',
+                        provider: 'email'
+                    };
+                    authToken = regData.access_token || null;
+                    adminAuthenticated = false;
+                    onLoginSuccess();
+                    showToast('✅ تم إنشاء الحساب بنجاح 🎉');
+                    msgEl.textContent = '';
                 } catch (e) {
-                    const msg = e?.message || e?.error_description || JSON.stringify(e);
-                    if (msg.includes('already registered') || msg.includes('400')) {
-                        msgEl.textContent = '⚠️ هذا البريد مسجل مسبقاً — استخدم تسجيل الدخول';
-                    } else if (msg.includes('429')) {
-                        msgEl.textContent = '⚠️ كثير من المحاولات — انتظر قليلاً';
-                    } else {
-                        msgEl.textContent = '❌ ' + msg.slice(0, 60);
-                    }
+                    msgEl.textContent = '❌ ' + (e.msg || e.message || 'فشل التسجيل').slice(0, 60);
                 }
             }
-
-            _authInProgress = false;
-            document.getElementById('upSubmitBtn').disabled = false;
-        }
-
-        function _localLogin(username) {
-            // دخول محلي بدون Supabase — يُحفظ في localStorage فقط
-            loggedInUser = { id: 'local_' + username.toLowerCase().replace(/\s+/g,'_'), name: username, avatar: '', provider: 'local' };
-            authToken = null;
-            adminAuthenticated = false;
-            onLoginSuccess();
-            showToast('👋 أهلاً ' + username + ' (دخول محلي)');
-            document.getElementById('upMsg').textContent = '';
         }
 
         // بدء التطبيق
