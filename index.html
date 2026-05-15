@@ -804,44 +804,44 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdXlocnNobmN0d2lseGdnY3lpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDU3MTUsImV4cCI6MjA5NDI4MTcxNX0.En9CcuL14vXP2LlgKLsTrg1DcJSPkEnZem7E2a-lgQI';               // ← غيّر هنا
         // ✅ كلمة مرور الأدمن محفوظة في Supabase بأمان (جدول settings)
 
-        /*=========================================================
-        📋 SQL المطلوب تشغيله في Supabase → SQL Editor:
-        =========================================================
+        // =========================================================
+        // 📋 SQL المطلوب تشغيله في Supabase → SQL Editor:
+        // =========================================================
 
-        -- جدول users (لو مش موجود)
-        CREATE TABLE IF NOT EXISTS public.users (
-            id TEXT PRIMARY KEY,
-            name TEXT NOT NULL,
-            avatar TEXT DEFAULT '',
-            provider TEXT DEFAULT 'email',
-            read_count INTEGER DEFAULT 0,
-            friends INTEGER DEFAULT 0,
-            bio TEXT DEFAULT '',
-            created_at TIMESTAMPTZ DEFAULT now()
-        );
+        // -- جدول users (لو مش موجود)
+        // CREATE TABLE IF NOT EXISTS public.users (
+            // id TEXT PRIMARY KEY,
+            // name TEXT NOT NULL,
+            // avatar TEXT DEFAULT '',
+            // provider TEXT DEFAULT 'email',
+            // read_count INTEGER DEFAULT 0,
+            // friends INTEGER DEFAULT 0,
+            // bio TEXT DEFAULT '',
+            // created_at TIMESTAMPTZ DEFAULT now()
+        // );
 
-        -- السماح بالقراءة لكل الناس
-        ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
-        CREATE POLICY "users_select_all" ON public.users FOR SELECT USING (true);
+        // -- السماح بالقراءة لكل الناس
+        // ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+        // CREATE POLICY "users_select_all" ON public.users FOR SELECT USING (true);
 
-        -- السماح للمستخدم بإدراج/تحديث بياناته فقط (authenticated)
-        CREATE POLICY "users_upsert_own" ON public.users FOR INSERT WITH CHECK (true);
-        CREATE POLICY "users_update_own" ON public.users FOR UPDATE USING (true);
+        // -- السماح للمستخدم بإدراج/تحديث بياناته فقط (authenticated)
+        // CREATE POLICY "users_upsert_own" ON public.users FOR INSERT WITH CHECK (true);
+        // CREATE POLICY "users_update_own" ON public.users FOR UPDATE USING (true);
 
-        -- جدول user_roles للأدمن
-        CREATE TABLE IF NOT EXISTS public.user_roles (
-            id SERIAL PRIMARY KEY,
-            user_id TEXT NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
-            role TEXT NOT NULL DEFAULT 'user',
-            UNIQUE(user_id, role)
-        );
-        ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
-        CREATE POLICY "roles_select_all" ON public.user_roles FOR SELECT USING (true);
+        // -- جدول user_roles للأدمن
+        // CREATE TABLE IF NOT EXISTS public.user_roles (
+            // id SERIAL PRIMARY KEY,
+            // user_id TEXT NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+            // role TEXT NOT NULL DEFAULT 'user',
+            // UNIQUE(user_id, role)
+        // );
+        // ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
+        // CREATE POLICY "roles_select_all" ON public.user_roles FOR SELECT USING (true);
 
-        -- إضافة أدمن (بعد إنشاء الحساب):
-        -- INSERT INTO public.user_roles (user_id, role) VALUES ('YOUR_USER_ID_HERE', 'admin');
-        =========================================================
-        */
+        // -- إضافة أدمن (بعد إنشاء الحساب):
+        // -- INSERT INTO public.user_roles (user_id, role) VALUES ('YOUR_USER_ID_HERE', 'admin');
+        // =========================================================
+        // */
 
         // ==================== دوال Supabase (REST API) ====================
         const SB = {
@@ -2598,7 +2598,7 @@
 
             if (upMode === 'login') {
                 try {
-                    const fakeEmail = username.replace(/\s+/g, '').toLowerCase() + '@abyss.local';
+                    const fakeEmail = username.includes('@') ? username : username.replace(/\s+/g, '').toLowerCase() + '@abyss.local';
                     const data = await signIn(fakeEmail, password);
                     loggedInUser = { id: data.user?.id || ('sb_' + username), name: username, avatar: '', provider: 'email' };
                     authToken = data.access_token;
