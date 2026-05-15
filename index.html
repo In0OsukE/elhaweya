@@ -526,142 +526,6 @@
         }
         .toast.show { opacity: 1; }
 
-        /* ===== زرار الفل سكرين ===== */
-        .fullscreen-btn {
-            background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.25);
-            color: #fff; padding: 7px 14px; border-radius: 8px;
-            cursor: pointer; font-size: 16px; transition: var(--transition);
-            font-family: 'Cairo', sans-serif; line-height: 1;
-        }
-        .fullscreen-btn:hover { background: var(--accent); border-color: var(--accent); }
-        #page-reader.reader-fullscreen {
-            position: fixed !important; top: 0 !important; left: 0 !important;
-            width: 100vw !important; height: 100vh !important;
-            background: #000 !important; z-index: 9999 !important;
-            overflow-y: auto !important; display: block !important;
-        }
-        #page-reader.reader-fullscreen .reader-topbar {
-            position: sticky; top: 0; z-index: 10000;
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(8px);
-        }
-        #page-reader.reader-fullscreen #readerPages {
-            max-width: 860px !important;
-        }
-
-        /* ===== لوحة نشر الفصول (publish panel) ===== */
-        .publish-panel {
-            display: grid; grid-template-columns: 1fr 320px;
-            gap: 20px; align-items: start;
-        }
-        @media (max-width: 900px) { .publish-panel { grid-template-columns: 1fr; } }
-
-        .publish-upload-zone {
-            border: 2px dashed var(--accent); border-radius: var(--radius);
-            min-height: 300px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            cursor: pointer; transition: var(--transition);
-            background: rgba(233,68,96,0.04); position: relative;
-        }
-        .publish-upload-zone:hover, .publish-upload-zone.drag-over {
-            background: rgba(233,68,96,0.10); border-color: #ff6b8a;
-        }
-        .publish-upload-zone .upload-icon { font-size: 56px; margin-bottom: 14px; }
-        .publish-upload-zone .upload-label { font-size: 20px; font-weight: bold; margin-bottom: 6px; }
-        .publish-upload-zone .upload-sub { font-size: 13px; color: var(--text-muted); }
-        .publish-upload-zone input[type=file] {
-            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
-        }
-
-        .publish-sidebar-card {
-            background: var(--bg-card); border-radius: var(--radius);
-            border: 1px solid var(--border); padding: 18px; margin-bottom: 14px;
-        }
-        .publish-sidebar-card .card-title {
-            font-size: 13px; color: var(--accent); font-weight: bold;
-            margin-bottom: 14px; letter-spacing: 0.5px; text-align: right;
-        }
-        .publish-sidebar-row {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 14px; gap: 10px;
-        }
-        .publish-sidebar-row:last-child { margin-bottom: 0; }
-        .publish-sidebar-row .row-label { font-size: 14px; font-weight: bold; }
-        .publish-sidebar-row .row-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
-        /* Toggle Switch */
-        .toggle-switch {
-            position: relative; width: 52px; height: 28px; flex-shrink: 0;
-        }
-        .toggle-switch input { display: none; }
-        .toggle-switch .slider {
-            position: absolute; inset: 0; border-radius: 28px;
-            background: #444; cursor: pointer; transition: 0.3s;
-        }
-        .toggle-switch .slider::before {
-            content: ''; position: absolute; width: 20px; height: 20px;
-            border-radius: 50%; background: #fff; top: 4px; left: 4px; transition: 0.3s;
-        }
-        .toggle-switch input:checked + .slider { background: var(--accent); }
-        .toggle-switch input:checked + .slider::before { transform: translateX(24px); }
-
-        /* Coin chips */
-        .coin-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-        .coin-chip {
-            padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border);
-            background: var(--bg-dark); color: var(--text); cursor: pointer;
-            font-size: 13px; font-weight: bold; transition: var(--transition);
-            font-family: 'Cairo', sans-serif;
-        }
-        .coin-chip:hover { border-color: var(--accent); color: var(--accent); }
-        .coin-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-        /* Manga search in publish */
-        .publish-manga-search {
-            position: relative; margin-bottom: 8px;
-        }
-        .publish-manga-search input {
-            width: 100%; padding: 10px 36px 10px 14px; border-radius: 8px;
-            border: 1px solid var(--border); background: var(--bg-dark); color: #fff;
-            font-size: 14px; outline: none; font-family: 'Cairo', sans-serif;
-            transition: var(--transition);
-        }
-        .publish-manga-search input:focus { border-color: var(--accent); }
-        .publish-manga-search .search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-
-        .publish-confirm-btn {
-            width: 100%; background: var(--accent); color: #fff; border: none;
-            padding: 16px; border-radius: 10px; cursor: pointer;
-            font-size: 16px; font-weight: 900; transition: var(--transition);
-            font-family: 'Cairo', sans-serif; display: flex; align-items: center;
-            justify-content: center; gap: 8px;
-            box-shadow: 0 4px 20px rgba(233,68,96,0.4);
-            margin-top: 4px;
-        }
-        .publish-confirm-btn:hover { background: #ff5a75; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(233,68,96,0.5); }
-
-        /* Preview thumbnails */
-        .pages-preview { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-        .pages-preview .thumb {
-            width: 60px; height: 80px; border-radius: 6px; overflow: hidden;
-            border: 2px solid var(--border); background: var(--bg-dark);
-            display: flex; align-items: center; justify-content: center; font-size: 18px;
-            position: relative;
-        }
-        .pages-preview .thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .pages-preview .thumb .thumb-num {
-            position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,0.7);
-            color: #fff; font-size: 9px; padding: 1px 4px; border-radius: 4px;
-        }
-
-        /* login with user/pass */
-        .login-tab-btns { display: flex; gap: 0; margin-bottom: 16px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
-        .login-tab-btn {
-            flex: 1; padding: 10px; background: var(--bg-dark); color: var(--text-muted);
-            border: none; cursor: pointer; font-family: 'Cairo', sans-serif; font-size: 14px;
-            transition: var(--transition); font-weight: bold;
-        }
-        .login-tab-btn.active { background: var(--accent); color: #fff; }
-
         @media (max-width: 768px) {
             .manga-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
             .details-container { flex-direction: column; align-items: center; }
@@ -709,46 +573,18 @@
 
     <!-- مودال تسجيل الدخول -->
     <div class="modal-overlay" id="loginModal">
-        <div class="modal" style="max-width:440px;">
+        <div class="modal">
             <h3>🔑 تسجيل الدخول</h3>
-            <div class="login-tab-btns">
-                <button class="login-tab-btn active" id="tabDiscordBtn" onclick="switchLoginTab('discord')">Discord</button>
-                <button class="login-tab-btn" id="tabUserBtn" onclick="switchLoginTab('userpass')">يوزر / باسورد</button>
-                <button class="login-tab-btn" id="tabGuestBtn" onclick="switchLoginTab('guest')">ضيف</button>
-            </div>
-
-            <!-- Discord Tab -->
-            <div id="loginTabDiscord">
-                <button class="social-btn discord" onclick="loginWithDiscord()" style="width:100%;">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="white" style="vertical-align:middle;margin-left:8px;"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-                    تسجيل الدخول بـ Discord
-                </button>
-                <p style="font-size:12px;color:var(--text-muted);margin-top:10px;text-align:center;">يتطلب حساب Discord وربط Supabase</p>
-            </div>
-
-            <!-- Username/Password Tab -->
-            <div id="loginTabUserpass" style="display:none;">
-                <div style="display:flex;gap:8px;margin-bottom:8px;">
-                    <button onclick="setLoginMode('login')" id="modeLoginBtn" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-family:'Cairo',sans-serif;font-weight:bold;font-size:13px;transition:var(--transition);">تسجيل دخول</button>
-                    <button onclick="setLoginMode('register')" id="modeRegisterBtn" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px;transition:var(--transition);">إنشاء حساب</button>
-                </div>
-                <input type="text" id="upUsername" placeholder="اسم المستخدم" style="margin-bottom:8px;">
-                <div id="upEmailRow" style="display:none;"><input type="email" id="upEmail" placeholder="البريد الإلكتروني" style="margin-bottom:8px;width:100%;"></div>
-                <input type="password" id="upPassword" placeholder="كلمة المرور" style="margin-bottom:10px;">
-                <button onclick="handleUserPassAuth()" id="upSubmitBtn" class="btn-primary" style="width:100%;padding:13px;font-size:15px;">دخول</button>
-                <p id="upMsg" style="font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center;"></p>
-            </div>
-
-            <!-- Guest Tab -->
-            <div id="loginTabGuest" style="display:none;">
-                <input type="text" id="guestName" placeholder="اسم المستخدم (ضيف)" style="margin-bottom:10px;">
-                <button onclick="loginAsGuest()" style="width:100%;background:var(--bg-card);color:var(--text);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;font-size:15px;font-weight:bold;font-family:'Cairo',sans-serif;transition:var(--transition);" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-card)'">
-                    👤 دخول كضيف
-                </button>
-                <p style="font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center;">الضيف لا يُحفظ حسابه بعد إغلاق المتصفح</p>
-            </div>
-
-            <button class="close-modal" onclick="closeLoginModal()" style="margin-top:14px;">إلغاء</button>
+            <button class="social-btn discord" onclick="loginWithDiscord()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="white" style="vertical-align:middle;margin-left:8px;"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                تسجيل الدخول بـ Discord
+            </button>
+            <div class="divider">أو</div>
+            <input type="text" id="guestName" placeholder="اسم المستخدم (ضيف)">
+            <button onclick="loginAsGuest()" style="width:100%;background:var(--bg-card);color:var(--text);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;font-size:15px;font-weight:bold;font-family:'Cairo',sans-serif;margin-top:6px;transition:var(--transition);" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-card)'">
+                👤 دخول كضيف
+            </button>
+            <button class="close-modal" onclick="closeLoginModal()">إلغاء</button>
         </div>
     </div>
 
@@ -799,7 +635,6 @@
         const SUPABASE_URL = 'https://zquyhrshnctwilxggcyi.supabase.co';  // ← غيّر هنا
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdXlocnNobmN0d2lseGdnY3lpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDU3MTUsImV4cCI6MjA5NDI4MTcxNX0.En9CcuL14vXP2LlgKLsTrg1DcJSPkEnZem7E2a-lgQI';               // ← غيّر هنا
         // ✅ كلمة مرور الأدمن محفوظة في Supabase بأمان (جدول settings)
-
 
         // ==================== دوال Supabase (REST API) ====================
         const SB = {
@@ -1069,12 +904,11 @@
 
                 <!-- ======= عارض الفصول ======= -->
                 <section class="page" id="page-reader">
-                    <div class="reader-topbar" style="position:sticky;top:0;z-index:50;background:var(--bg-dark);padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-wrap:wrap;">
+                    <div style="position:sticky;top:0;z-index:50;background:var(--bg-dark);padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-wrap:wrap;">
                         <button onclick="closeReader()" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;">⬅️ رجوع</button>
                         <span id="readerTitle" style="font-weight:bold;font-size:14px;flex:1;text-align:center;"></span>
                         <button id="readerPrevBtn" onclick="readerNavChapter(-1)" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;">◀ السابق</button>
                         <button id="readerNextBtn" onclick="readerNavChapter(1)"  style="background:var(--accent);border:none;color:#fff;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;">التالي ▶</button>
-                        <button class="fullscreen-btn" onclick="toggleReaderFullscreen()" id="fullscreenBtn" title="ملء الشاشة">⛶</button>
                     </div>
                     <div id="readerPages" style="max-width:720px;margin:0 auto;padding:10px 0;"></div>
                     <div style="text-align:center;padding:20px;display:flex;justify-content:center;gap:12px;">
@@ -1106,210 +940,71 @@
 
                 <section class="page" id="page-admin" style="display:none !important;">
                     <div class="section-title">⚙️ لوحة الإدارة</div>
-
-                    <!-- تبات الأدمن -->
-                    <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
-                        <button class="filter-btn active-filter" id="adminTab1" onclick="switchAdminTab('publish')">🚀 نشر الفصول</button>
-                        <button class="filter-btn" id="adminTab2" onclick="switchAdminTab('addmanga')">➕ إضافة عمل</button>
-                        <button class="filter-btn" id="adminTab3" onclick="switchAdminTab('mangalist')">📋 الأعمال</button>
+                    <div class="admin-warning">
+                        ⚠️ هذه اللوحة مخصصة للمسؤولين فقط. عند ربط السيرفر ستُحفظ البيانات على قاعدة البيانات تلقائيًا.
                     </div>
-
-                    <!-- ====== تاب نشر الفصول (Discord style) ====== -->
-                    <div id="adminPublishTab">
-                        <div style="text-align:center;margin-bottom:20px;">
-                            <h2 style="font-size:24px;font-weight:900;">لوحة <span style="color:var(--accent);">نشر الفصول</span></h2>
+                    <div class="admin-section">
+                        <h3>➕ إضافة عمل جديد</h3>
+                        <div class="form-row">
+                            <div class="form-group"><label>اسم العمل (عربي) *</label><input type="text" id="adminTitle" placeholder="مثال: البطل المتخلى عنه"></div>
+                            <div class="form-group"><label>اسم المؤلف *</label><input type="text" id="adminAuthor" placeholder="مثال: KIM Hyun-soo"></div>
                         </div>
-                        <div class="publish-panel">
-                            <!-- منطقة الرفع -->
-                            <div>
-                                <div class="publish-upload-zone" id="publishDropZone" onclick="document.getElementById('publishPagesInput').click()">
-                                    <div class="upload-icon">☁️</div>
-                                    <div class="upload-label">اسحب الصور هنا أو اضغط للرفع</div>
-                                    <div class="upload-sub">يدعم الصور (JPG, PNG) أو ملفات ZIP</div>
-                                    <input type="file" id="publishPagesInput" accept="image/*" multiple style="opacity:0;position:absolute;inset:0;cursor:pointer;" onchange="handlePublishFiles(this.files)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>🖼️ غلاف العمل</label>
+                                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                                    <input type="file" id="adminCoverFile" accept="image/*" onchange="previewCover(this)" style="flex:1;min-width:180px;padding:8px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                                    <span style="color:var(--text-muted);font-size:13px;">أو</span>
+                                    <input type="text" id="adminCover" placeholder="رابط الغلاف (URL)" style="flex:1;min-width:180px;">
                                 </div>
-                                <div class="pages-preview" id="publishPagesPreview"></div>
-                                <div id="publishPageCount" style="font-size:13px;color:var(--accent-green);margin-top:8px;font-weight:bold;"></div>
-
-                                <button class="publish-confirm-btn" onclick="publishChapter()">
-                                    🚀 تأكيد ونشر الفصل
-                                </button>
+                                <div id="coverPreview" style="margin-top:10px;display:none;">
+                                    <img id="coverPreviewImg" style="width:80px;height:110px;object-fit:cover;border-radius:8px;border:2px solid var(--accent);">
+                                    <button onclick="clearCoverFile()" style="margin-right:8px;background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">✕ إزالة</button>
+                                </div>
                             </div>
-
-                            <!-- الشريط الجانبي -->
-                            <div>
-                                <!-- اختيار العمل -->
-                                <div class="publish-sidebar-card">
-                                    <div class="card-title">اختيار العمل</div>
-                                    <div class="publish-manga-search">
-                                        <span class="search-icon">🔍</span>
-                                        <input type="text" id="publishMangaSearch" placeholder="ابحث عن المانجا..." oninput="filterPublishMangaList(this.value)">
-                                    </div>
-                                    <select id="publishMangaSelect" size="3" style="width:100%;background:var(--bg-dark);color:#fff;border:1px solid var(--border);border-radius:8px;padding:6px;font-family:'Cairo',sans-serif;font-size:13px;outline:none;" onchange="onPublishMangaChange(this.value)">
-                                    </select>
+                            <div class="form-group"><label>التقييم (1-10)</label><input type="number" id="adminRating" min="1" max="10" step="0.1" value="8.0"></div>
+                            <div class="form-group"><label>الحالة</label><select id="adminStatus"><option value="مستمر">مستمر</option><option value="مكتمل">مكتمل</option><option value="متوقف">متوقف</option></select></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>التصنيفات</label>
+                                <div class="genre-checkboxes">
+                                    <input class="genre-checkbox" type="checkbox" id="g1" value="أكشن"><label class="genre-label" for="g1">أكشن</label>
+                                    <input class="genre-checkbox" type="checkbox" id="g2" value="فانتازيا"><label class="genre-label" for="g2">فانتازيا</label>
+                                    <input class="genre-checkbox" type="checkbox" id="g3" value="دراما"><label class="genre-label" for="g3">دراما</label>
+                                    <input class="genre-checkbox" type="checkbox" id="g4" value="غموض"><label class="genre-label" for="g4">غموض</label>
+                                    <input class="genre-checkbox" type="checkbox" id="g5" value="كوميديا"><label class="genre-label" for="g5">كوميديا</label>
+                                    <input class="genre-checkbox" type="checkbox" id="g6" value="رومانسي"><label class="genre-label" for="g6">رومانسي</label>
+                                    <input class="genre-checkbox" type="checkbox" id="g7" value="مغامرات"><label class="genre-label" for="g7">مغامرات</label>
+                                    <input class="genre-checkbox" type="checkbox" id="g8" value="شريحة حياة"><label class="genre-label" for="g8">شريحة حياة</label>
                                 </div>
-
-                                <!-- بيانات الفصل -->
-                                <div class="publish-sidebar-card">
-                                    <div class="card-title">بيانات الفصل</div>
-                                    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-                                        <button onclick="changePublishChNum(-1)" style="background:var(--bg-dark);border:1px solid var(--border);color:#fff;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:18px;line-height:1;flex-shrink:0;">−</button>
-                                        <input type="number" id="publishChNum" value="1" min="1" style="flex:1;text-align:center;padding:8px;background:var(--bg-dark);color:#fff;border:1px solid var(--border);border-radius:8px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:bold;outline:none;">
-                                        <button onclick="changePublishChNum(1)" style="background:var(--accent);border:none;color:#fff;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:18px;line-height:1;flex-shrink:0;">+</button>
-                                    </div>
-                                    <input type="text" id="publishChTitle" placeholder="عنوان الفصل (اختياري)" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-dark);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;outline:none;">
-                                </div>
-
-                                <!-- إعدادات القفل -->
-                                <div class="publish-sidebar-card">
-                                    <div class="card-title">إعدادات القفل</div>
-
-                                    <div class="publish-sidebar-row">
-                                        <div>
-                                            <div class="row-label">قفل الفصل</div>
-                                            <div class="row-sub">يتطلب عملات لفتحه</div>
-                                        </div>
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="publishLockToggle" onchange="togglePublishLock(this.checked)">
-                                            <span class="slider"></span>
-                                        </label>
-                                    </div>
-
-                                    <div id="publishCoinSection" style="display:none;">
-                                        <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">حدد السعر بالعملات</div>
-                                        <div class="coin-chips" id="publishCoinChips">
-                                            <button class="coin-chip" onclick="selectCoin(10)">10</button>
-                                            <button class="coin-chip" onclick="selectCoin(20)">20</button>
-                                            <button class="coin-chip active" onclick="selectCoin(30)">30</button>
-                                            <button class="coin-chip" onclick="selectCoin(40)">40</button>
-                                            <button class="coin-chip" onclick="selectCoin(50)">50</button>
-                                            <button class="coin-chip" onclick="selectCoin(60)">60</button>
-                                            <button class="coin-chip" onclick="selectCoin(70)">70</button>
-                                            <button class="coin-chip" onclick="selectCoin(80)">80</button>
-                                            <button class="coin-chip" onclick="selectCoin(90)">90</button>
-                                            <button class="coin-chip" onclick="selectCoin(100)">100</button>
-                                        </div>
-                                        <div style="margin-top:10px;">
-                                            <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">تاريخ انتهاء القفل (تلقائي)</div>
-                                            <input type="date" id="publishLockExpiry" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-dark);color:#2ecc71;font-family:'Cairo',sans-serif;font-size:13px;outline:none;">
-                                            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">يتم حسابه تلقائياً بناء على آخر فصل مفعل.</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="publish-sidebar-row" style="margin-top:10px;">
-                                        <div>
-                                            <div class="row-label">وضع السرعة (ضغط الصور)</div>
-                                            <div class="row-sub">يقلل الحجم لرفع أسرع (يُنصح به)</div>
-                                        </div>
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="publishSpeedMode" checked>
-                                            <span class="slider"></span>
-                                        </label>
-                                    </div>
-
-                                    <div class="publish-sidebar-row">
-                                        <div>
-                                            <div class="row-label">وضع الاستمرارية</div>
-                                            <div class="row-sub">حفظ الخيارات للرفع التالي</div>
-                                        </div>
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="publishContinuityMode">
-                                            <span class="slider"></span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <!-- قفل الروابط -->
-                                <div class="publish-sidebar-card">
-                                    <div class="card-title" style="color:#5865F2;">قفل الروابط</div>
-                                    <div class="publish-sidebar-row">
-                                        <div>
-                                            <div class="row-label">قفل برابط مختصر</div>
-                                            <div class="row-sub">حماية إضافية للتحقق</div>
-                                        </div>
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="publishShortlinkLock">
-                                            <span class="slider"></span>
-                                        </label>
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>وصف العمل *</label><textarea id="adminDesc" placeholder="اكتب وصفًا مختصرًا للعمل..."></textarea></div>
+                        </div>
+                        <h3 style="margin-top:6px;">📑 إضافة الفصول</h3>
+                        <div class="chapter-builder" id="chapterBuilder">
+                            <div class="chapter-entry" id="chEntry_1">
+                                <input type="number" placeholder="رقم الفصل" value="1" style="width:100px;flex:unset">
+                                <input type="text" placeholder="عنوان الفصل (عربي)">
+                                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;">
+                                    <label style="font-size:12px;color:var(--text-muted);white-space:nowrap;">📄 صفحات الفصل:</label>
+                                    <input type="file" accept="image/*" multiple class="chapter-pages-input"
+                                        style="flex:1;min-width:150px;padding:6px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;"
+                                        onchange="updatePageCount(this, 1)">
+                                    <span id="pageCount_1" style="font-size:12px;color:var(--accent-green);white-space:nowrap;">0 صفحة</span>
+                                </div>
+                                <button class="btn-danger" onclick="removeChapterEntry(1)">حذف</button>
+                            </div>
+                        </div>
+                        <button class="filter-btn" onclick="addChapterEntry()" style="margin-top:10px;margin-bottom:18px;">➕ إضافة فصل آخر</button>
+                        <br>
+                        <button class="btn-primary" onclick="adminAddManga()">💾 حفظ العمل</button>
                     </div>
-
-                    <!-- ====== تاب إضافة عمل ====== -->
-                    <div id="adminAddMangaTab" style="display:none;">
-                        <div class="admin-warning">
-                            ⚠️ هذه اللوحة مخصصة للمسؤولين فقط. عند ربط السيرفر ستُحفظ البيانات على قاعدة البيانات تلقائيًا.
-                        </div>
-                        <div class="admin-section">
-                            <h3>➕ إضافة عمل جديد</h3>
-                            <div class="form-row">
-                                <div class="form-group"><label>اسم العمل (عربي) *</label><input type="text" id="adminTitle" placeholder="مثال: البطل المتخلى عنه"></div>
-                                <div class="form-group"><label>اسم المؤلف *</label><input type="text" id="adminAuthor" placeholder="مثال: KIM Hyun-soo"></div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>🖼️ غلاف العمل</label>
-                                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                                        <input type="file" id="adminCoverFile" accept="image/*" onchange="previewCover(this)" style="flex:1;min-width:180px;padding:8px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">
-                                        <span style="color:var(--text-muted);font-size:13px;">أو</span>
-                                        <input type="text" id="adminCover" placeholder="رابط الغلاف (URL)" style="flex:1;min-width:180px;">
-                                    </div>
-                                    <div id="coverPreview" style="margin-top:10px;display:none;">
-                                        <img id="coverPreviewImg" style="width:80px;height:110px;object-fit:cover;border-radius:8px;border:2px solid var(--accent);">
-                                        <button onclick="clearCoverFile()" style="margin-right:8px;background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">✕ إزالة</button>
-                                    </div>
-                                </div>
-                                <div class="form-group"><label>التقييم (1-10)</label><input type="number" id="adminRating" min="1" max="10" step="0.1" value="8.0"></div>
-                                <div class="form-group"><label>الحالة</label><select id="adminStatus"><option value="مستمر">مستمر</option><option value="مكتمل">مكتمل</option><option value="متوقف">متوقف</option></select></div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>التصنيفات</label>
-                                    <div class="genre-checkboxes">
-                                        <input class="genre-checkbox" type="checkbox" id="g1" value="أكشن"><label class="genre-label" for="g1">أكشن</label>
-                                        <input class="genre-checkbox" type="checkbox" id="g2" value="فانتازيا"><label class="genre-label" for="g2">فانتازيا</label>
-                                        <input class="genre-checkbox" type="checkbox" id="g3" value="دراما"><label class="genre-label" for="g3">دراما</label>
-                                        <input class="genre-checkbox" type="checkbox" id="g4" value="غموض"><label class="genre-label" for="g4">غموض</label>
-                                        <input class="genre-checkbox" type="checkbox" id="g5" value="كوميديا"><label class="genre-label" for="g5">كوميديا</label>
-                                        <input class="genre-checkbox" type="checkbox" id="g6" value="رومانسي"><label class="genre-label" for="g6">رومانسي</label>
-                                        <input class="genre-checkbox" type="checkbox" id="g7" value="مغامرات"><label class="genre-label" for="g7">مغامرات</label>
-                                        <input class="genre-checkbox" type="checkbox" id="g8" value="شريحة حياة"><label class="genre-label" for="g8">شريحة حياة</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group"><label>وصف العمل *</label><textarea id="adminDesc" placeholder="اكتب وصفًا مختصرًا للعمل..."></textarea></div>
-                            </div>
-                            <h3 style="margin-top:6px;">📑 إضافة الفصول</h3>
-                            <div class="chapter-builder" id="chapterBuilder">
-                                <div class="chapter-entry" id="chEntry_1">
-                                    <input type="number" placeholder="رقم الفصل" value="1" style="width:100px;flex:unset">
-                                    <input type="text" placeholder="عنوان الفصل (عربي)">
-                                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;">
-                                        <label style="font-size:12px;color:var(--text-muted);white-space:nowrap;">📄 صفحات الفصل:</label>
-                                        <input type="file" accept="image/*" multiple class="chapter-pages-input"
-                                            style="flex:1;min-width:150px;padding:6px;background:var(--bg-dark);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;"
-                                            onchange="updatePageCount(this, 1)">
-                                        <span id="pageCount_1" style="font-size:12px;color:var(--accent-green);white-space:nowrap;">0 صفحة</span>
-                                    </div>
-                                    <button class="btn-danger" onclick="removeChapterEntry(1)">حذف</button>
-                                </div>
-                            </div>
-                            <button class="filter-btn" onclick="addChapterEntry()" style="margin-top:10px;margin-bottom:18px;">➕ إضافة فصل آخر</button>
-                            <br>
-                            <button class="btn-primary" onclick="adminAddManga()">💾 حفظ العمل</button>
-                        </div>
-                    </div>
-
-                    <!-- ====== تاب قائمة الأعمال ====== -->
-                    <div id="adminMangaListTab" style="display:none;">
-                        <div class="admin-section">
-                            <h3>📋 الأعمال الحالية (<span id="adminMangaCount">0</span>)</h3>
-                            <div class="manga-list-admin" id="adminMangaList"></div>
-                        </div>
+                    <div class="admin-section">
+                        <h3>📋 الأعمال الحالية (<span id="adminMangaCount">0</span>)</h3>
+                        <div class="manga-list-admin" id="adminMangaList"></div>
                     </div>
                 </section>`;
         }
@@ -1383,7 +1078,7 @@
             if (p === 'mylist') renderMyList();
             if (p === 'friends') renderFriendsPage();
             if (p === 'leaderboard') renderLeaderboard();
-            if (p === 'admin') { renderAdminPanel(); switchAdminTab('publish'); }
+            if (p === 'admin') renderAdminPanel();
             document.getElementById('mainContent').scrollTop = 0;
             closeSidebar();
             saveToStorage();
@@ -1394,15 +1089,11 @@
             const u = document.getElementById('adminUsernameInput').value.trim();
             const p = document.getElementById('adminPasswordInput').value.trim();
             if (!u || !p) { showToast('⚠️ أدخل اسم المستخدم وكلمة المرور'); return; }
-            // التحقق عبر hash بسيط — أكونتين أدمن
+            // التحقق عبر hash بسيط
             const _h = s => [...s].reduce((a,c)=>Math.imul(31,a)+c.charCodeAt(0)|0,0)>>>0;
-            const admins = [
-                { uHash: 2013175396, pHash: 761560361,  name: 'السكري' },   // alsokary / alsokary<3nunu
-                { uHash: 92787781,   pHash: 3181154776, name: 'أحمد'    }    // ahmed / abyss2024
-            ];
-            const hU = _h(u), hP = _h(p);
-            const match = admins.find(a => a.uHash === hU && a.pHash === hP);
-            if (match) {
+            const validU = 2013175396;  // hash of username
+            const validP = 761560361;   // hash of password
+            if (_h(u) === validU && _h(p) === validP) {
                 adminAuthenticated = true;
                 document.getElementById('adminPasswordModal').classList.remove('show');
                 document.getElementById('adminNavLink').style.display = '';
@@ -1410,7 +1101,7 @@
                 document.getElementById('adminPasswordInput').value = '';
                 saveToStorage();
                 goToPage('admin');
-                showToast(`✅ أهلاً يا ${match.name} 👑`);
+                showToast('✅ أهلاً يا السكري 👑');
             } else {
                 showToast('❌ اسم المستخدم أو كلمة المرور غلط');
                 document.getElementById('adminPasswordInput').value = '';
@@ -1643,14 +1334,7 @@
                 await SB.patch('manga', m.id, { chapters: m.chapters });
 
                 showToast(`✅ تم رفع فصل ${chNum} بنجاح!`);
-                // لو في صفحة التفاصيل لنفس المنجا → حدّث العرض
-                if (currentPage === 'details' && currentMangaId === m.id) {
-                    renderMangaDetails(m);
-                }
-                // لو في لوحة الأدمن → حدّث القائمة
-                if (currentPage === 'admin') {
-                    renderAdminPanel();
-                }
+                renderMangaDetails(m);
             } catch (e) {
                 showToast('❌ ' + (e.message || 'فشل الرفع').slice(0, 80));
             }
@@ -1670,7 +1354,6 @@
         }
 
         function closeReader() {
-            if (isReaderFullscreen) toggleReaderFullscreen();
             goToPage('details');
         }
 
@@ -1867,20 +1550,6 @@
             renderFriendsList();
         }
 
-        // فتح إضافة فصل مباشرة من لوحة الأدمن (بدون فتح صفحة التفاصيل)
-        function adminQuickAddChapter(mangaId) {
-            const m = mangaList.find(x => x.id === mangaId);
-            if (!m) { showToast('⚠️ المنجا مش موجودة'); return; }
-            addChapterTargetId = m.id;
-            document.getElementById('addChapterMangaName').textContent = '📚 ' + m.title;
-            const maxNum = m.chapters.length ? Math.max(...m.chapters.map(c => c.number)) : 0;
-            document.getElementById('newChapterNum').value = maxNum + 1;
-            document.getElementById('newChapterTitle').value = '';
-            document.getElementById('newChapterPages').value = '';
-            document.getElementById('newChapterPageCount').textContent = '0 صفحة';
-            document.getElementById('addChapterModal').classList.add('show');
-        }
-
         // ==================== لوحة الإدارة (للأدمن فقط) ====================
         function renderAdminPanel() {
             // حماية مضاعفة — لو مش أدمن ميشوفش حاجة
@@ -1897,7 +1566,6 @@
                         <div class="mai-title">${m.title}</div>
                         <div class="mai-info">✍️ ${m.author} · ${m.status} · ⭐ ${m.rating} · ${m.chapters.length} فصل</div>
                     </div>
-                    <button class="btn-primary" onclick="adminQuickAddChapter(${m.id})" style="background:var(--accent-green);border-color:var(--accent-green);color:#000;font-weight:bold;">➕ فصل</button>
                     <button class="btn-danger" onclick="adminDeleteManga(${m.id})">🗑️ حذف</button>
                 </div>`).join('');
         }
@@ -2180,261 +1848,6 @@
                 e.target.classList.remove('show');
             }
         });
-
-        // ==================== فل سكرين ====================
-        let isReaderFullscreen = false;
-        function toggleReaderFullscreen() {
-            const reader = document.getElementById('page-reader');
-            const btn = document.getElementById('fullscreenBtn');
-            const mainEl = document.getElementById('mainContent');
-            isReaderFullscreen = !isReaderFullscreen;
-            if (isReaderFullscreen) {
-                // تأكد إن الـ reader ظاهر حتى لو الـ page مش active
-                reader.classList.add('reader-fullscreen');
-                btn.textContent = '✕';
-                btn.title = 'إغلاق ملء الشاشة';
-                document.body.style.overflow = 'hidden';
-                reader.scrollTop = 0;
-            } else {
-                reader.classList.remove('reader-fullscreen');
-                btn.textContent = '⛶';
-                btn.title = 'ملء الشاشة';
-                document.body.style.overflow = '';
-            }
-        }
-        // ESC يخرج من الفل سكرين
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && isReaderFullscreen) toggleReaderFullscreen();
-        });
-
-        // ==================== تبويبات الأدمن ====================
-        function switchAdminTab(tab) {
-            document.getElementById('adminPublishTab').style.display = tab === 'publish' ? '' : 'none';
-            document.getElementById('adminAddMangaTab').style.display = tab === 'addmanga' ? '' : 'none';
-            document.getElementById('adminMangaListTab').style.display = tab === 'mangalist' ? '' : 'none';
-            ['adminTab1','adminTab2','adminTab3'].forEach((id, i) => {
-                document.getElementById(id).classList.toggle('active-filter', ['publish','addmanga','mangalist'][i] === tab);
-            });
-            if (tab === 'publish') refreshPublishMangaList();
-            if (tab === 'mangalist') renderAdminPanel();
-        }
-
-        // ==================== لوحة النشر ====================
-        let publishSelectedCoin = 30;
-        let publishSelectedFiles = [];
-
-        function refreshPublishMangaList(filter = '') {
-            const sel = document.getElementById('publishMangaSelect');
-            if (!sel) return;
-            const list = filter
-                ? mangaList.filter(m => m.title.includes(filter))
-                : mangaList;
-            sel.innerHTML = list.map(m =>
-                `<option value="${m.id}">${m.title} (${m.chapters.length} فصل)</option>`
-            ).join('');
-            if (list.length) onPublishMangaChange(list[0].id);
-        }
-
-        function filterPublishMangaList(v) { refreshPublishMangaList(v); }
-
-        function onPublishMangaChange(id) {
-            const m = mangaList.find(x => x.id == id);
-            if (!m) return;
-            const maxNum = m.chapters.length ? Math.max(...m.chapters.map(c => c.number)) : 0;
-            const numEl = document.getElementById('publishChNum');
-            if (numEl) numEl.value = maxNum + 1;
-            // تاريخ انتهاء القفل: 14 يوم من اليوم
-            const expEl = document.getElementById('publishLockExpiry');
-            if (expEl) {
-                const d = new Date(); d.setDate(d.getDate() + 14);
-                expEl.value = d.toISOString().split('T')[0];
-            }
-        }
-
-        function changePublishChNum(delta) {
-            const el = document.getElementById('publishChNum');
-            if (el) el.value = Math.max(1, (parseInt(el.value) || 1) + delta);
-        }
-
-        function selectCoin(val) {
-            publishSelectedCoin = val;
-            document.querySelectorAll('.coin-chip').forEach(c => {
-                c.classList.toggle('active', parseInt(c.textContent) === val);
-            });
-        }
-
-        function togglePublishLock(checked) {
-            const sec = document.getElementById('publishCoinSection');
-            if (sec) sec.style.display = checked ? '' : 'none';
-        }
-
-        function handlePublishFiles(files) {
-            publishSelectedFiles = Array.from(files).sort((a, b) => {
-                return (parseInt(a.name.match(/\d+/)?.[0] ?? '0')) - (parseInt(b.name.match(/\d+/)?.[0] ?? '0'));
-            });
-            const preview = document.getElementById('publishPagesPreview');
-            const countEl = document.getElementById('publishPageCount');
-            if (countEl) countEl.textContent = publishSelectedFiles.length + ' صفحة محددة';
-
-            if (!preview) return;
-            preview.innerHTML = '';
-            publishSelectedFiles.slice(0, 20).forEach((f, i) => {
-                const div = document.createElement('div');
-                div.className = 'thumb';
-                const url = URL.createObjectURL(f);
-                div.innerHTML = `<img src="${url}" loading="lazy"><span class="thumb-num">${i+1}</span>`;
-                preview.appendChild(div);
-            });
-            if (publishSelectedFiles.length > 20) {
-                const more = document.createElement('div');
-                more.className = 'thumb';
-                more.innerHTML = `<span style="font-size:12px;color:var(--text-muted);">+${publishSelectedFiles.length - 20}</span>`;
-                preview.appendChild(more);
-            }
-
-            // تأثير drop zone
-            const zone = document.getElementById('publishDropZone');
-            if (zone) { zone.querySelector('.upload-label').textContent = publishSelectedFiles.length + ' صورة جاهزة'; }
-        }
-
-        // Drag & Drop
-        document.addEventListener('DOMContentLoaded', () => {
-            const zone = document.getElementById('publishDropZone');
-            if (!zone) return;
-            zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
-            zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-            zone.addEventListener('drop', e => {
-                e.preventDefault(); zone.classList.remove('drag-over');
-                handlePublishFiles(e.dataTransfer.files);
-            });
-        });
-
-        async function publishChapter() {
-            const selEl = document.getElementById('publishMangaSelect');
-            if (!selEl || !selEl.value) { showToast('⚠️ اختر العمل أولاً'); return; }
-            const m = mangaList.find(x => x.id == selEl.value);
-            if (!m) { showToast('⚠️ العمل غير موجود'); return; }
-            if (!publishSelectedFiles.length) { showToast('⚠️ اختر صفحات الفصل'); return; }
-
-            const chNum = parseInt(document.getElementById('publishChNum').value) || 1;
-            const chTitle = document.getElementById('publishChTitle').value.trim() || `فصل ${chNum}`;
-            const isLocked = document.getElementById('publishLockToggle').checked;
-            const lockCoin = isLocked ? publishSelectedCoin : 0;
-
-            showLoading();
-            showToast(`⏳ رفع فصل ${chNum} — ${publishSelectedFiles.length} صفحة...`);
-
-            try {
-                const pageUrls = [];
-                const folderKey = `ch${String(chNum).padStart(3,'0')}_${Date.now()}`;
-                for (let j = 0; j < publishSelectedFiles.length; j++) {
-                    const ext = publishSelectedFiles[j].name.split('.').pop().toLowerCase();
-                    const url = await uploadImageToSupabase(
-                        publishSelectedFiles[j], 'chapters',
-                        `${folderKey}/page_${String(j+1).padStart(3,'0')}.${ext}`
-                    );
-                    pageUrls.push(url);
-                    if ((j+1) % 5 === 0) showToast(`📤 ${j+1}/${publishSelectedFiles.length} صفحة...`);
-                }
-
-                const newChapter = {
-                    number: chNum, title: chTitle,
-                    pages: publishSelectedFiles.length, pageUrls,
-                    locked: isLocked, lockCoin
-                };
-                m.chapters.push(newChapter);
-                m.chapters.sort((a, b) => a.number - b.number);
-                await SB.patch('manga', m.id, { chapters: m.chapters });
-
-                showToast(`✅ تم نشر فصل ${chNum} بنجاح! 🚀`);
-
-                // إعادة تعيين
-                publishSelectedFiles = [];
-                document.getElementById('publishPagesPreview').innerHTML = '';
-                document.getElementById('publishPageCount').textContent = '';
-                document.getElementById('publishChTitle').value = '';
-                document.getElementById('publishDropZone').querySelector('.upload-label').textContent = 'اسحب الصور هنا أو اضغط للرفع';
-                document.getElementById('publishPagesInput').value = '';
-
-                // استمرارية
-                if (!document.getElementById('publishContinuityMode').checked) {
-                    document.getElementById('publishLockToggle').checked = false;
-                    togglePublishLock(false);
-                }
-                onPublishMangaChange(m.id);
-
-            } catch (e) {
-                showToast('❌ ' + (e?.message || 'فشل النشر').slice(0, 80));
-            }
-            hideLoading();
-        }
-
-        // ==================== تبويبات تسجيل الدخول ====================
-        function switchLoginTab(tab) {
-            ['discord','userpass','guest'].forEach(t => {
-                document.getElementById('loginTab' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = t === tab ? '' : 'none';
-            });
-            document.getElementById('tabDiscordBtn').classList.toggle('active', tab === 'discord');
-            document.getElementById('tabUserBtn').classList.toggle('active', tab === 'userpass');
-            document.getElementById('tabGuestBtn').classList.toggle('active', tab === 'guest');
-        }
-
-        let upMode = 'login';
-        function setLoginMode(mode) {
-            upMode = mode;
-            document.getElementById('modeLoginBtn').style.cssText = mode === 'login'
-                ? 'flex:1;padding:8px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-family:Cairo,sans-serif;font-weight:bold;font-size:13px;transition:var(--transition);'
-                : 'flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;transition:var(--transition);';
-            document.getElementById('modeRegisterBtn').style.cssText = mode === 'register'
-                ? 'flex:1;padding:8px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-family:Cairo,sans-serif;font-weight:bold;font-size:13px;transition:var(--transition);'
-                : 'flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-family:Cairo,sans-serif;font-size:13px;transition:var(--transition);';
-            document.getElementById('upEmailRow').style.display = mode === 'register' ? '' : 'none';
-            document.getElementById('upSubmitBtn').textContent = mode === 'login' ? 'دخول' : 'إنشاء حساب';
-        }
-
-        async function handleUserPassAuth() {
-            const username = document.getElementById('upUsername').value.trim();
-            const password = document.getElementById('upPassword').value;
-            const msgEl = document.getElementById('upMsg');
-            if (!username || !password) { msgEl.textContent = '⚠️ أدخل اسم المستخدم وكلمة المرور'; return; }
-            msgEl.textContent = '⏳ جاري...';
-
-            if (upMode === 'login') {
-                // تحقق بسيط محلي — يمكن ربطه لاحقاً بـ Supabase
-                // حالياً: نسمح بأي يوزر/باسورد ويدخل كمستخدم عادي
-                try {
-                    // حاول تسجيل دخول بـ Supabase (email = username@abyss.local)
-                    const fakeEmail = username.replace(/\s+/g, '') + '@abyss.local';
-                    const data = await signIn(fakeEmail, password);
-                    loggedInUser = { id: data.user?.id || username, name: username, avatar: '', provider: 'email' };
-                    authToken = data.access_token;
-                    onLoginSuccess();
-                    showToast('✅ أهلاً ' + username + ' 👋');
-                    msgEl.textContent = '';
-                } catch (e) {
-                    // fallback: دخول محلي
-                    loggedInUser = { id: 'local_' + username, name: username, avatar: '', provider: 'local' };
-                    authToken = null;
-                    onLoginSuccess();
-                    showToast('👋 أهلاً ' + username);
-                    msgEl.textContent = '';
-                }
-            } else {
-                // تسجيل
-                const email = document.getElementById('upEmail').value.trim();
-                if (!email) { msgEl.textContent = '⚠️ أدخل البريد الإلكتروني'; return; }
-                try {
-                    await signUp(email, password);
-                    loggedInUser = { id: 'new_' + username, name: username, avatar: '', provider: 'email' };
-                    authToken = null;
-                    onLoginSuccess();
-                    showToast('✅ تم إنشاء الحساب بنجاح 🎉');
-                    msgEl.textContent = '';
-                } catch (e) {
-                    msgEl.textContent = '❌ ' + (e.msg || e.message || 'فشل التسجيل').slice(0, 60);
-                }
-            }
-        }
 
         // بدء التطبيق
         init();
